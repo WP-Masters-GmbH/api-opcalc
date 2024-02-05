@@ -9,5 +9,5 @@ class StockPrice extends Model
 {
     use HasFactory;
 
-    protected $table = 'StockPrice';
+    protected $table = 'stock_quotes';
 }

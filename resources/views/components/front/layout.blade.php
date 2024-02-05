@@ -12,11 +12,13 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="{{ url('/assets/style.css?' . time()) }}">
+    <link rel="stylesheet" href="{{ url('/assets/vr_style.css?' . time()) }}">
 </head>
 <body>
     <x-front.header></x-front.header>
     {{ $slot }}
     <script src="{{ url('/assets/main.js?' . time()) }}"></script>
+    <script src="{{ url('/assets/vr_main.js?' . time()) }}"></script>
     <x-front.footer></x-front.footer>
 </body>
 </html>

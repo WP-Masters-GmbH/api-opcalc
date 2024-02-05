@@ -13,7 +13,7 @@ class APIController extends Controller
      */
     public function get_all_stock_prices()
     {
-        return StockPrice::all();
+        return StockPrice::where('symbol', 'AA')->get();
     }
 
     /**
@@ -21,6 +21,6 @@ class APIController extends Controller
      */
     public function get_all_stock_history()
     {
-        return StockHistory::take(10000)->get();
+        return StockHistory::where('underlying_symbol', 'AA')->get();
     }
 }

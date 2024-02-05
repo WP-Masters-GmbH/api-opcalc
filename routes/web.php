@@ -3,6 +3,7 @@
 use App\Http\Controllers\Front\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PagesController;
+use App\Http\Controllers\MarketDataController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,3 +19,6 @@ use App\Http\Controllers\PagesController;
 #Route::get('/', [PagesController::class, 'index']);
 
 Route::get('/', HomeController::class);
+
+// Market Data
+Route::get('/market-data', [MarketDataController::class, 'index']);

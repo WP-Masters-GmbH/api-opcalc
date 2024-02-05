@@ -9,5 +9,5 @@ class StockHistory extends Model
 {
     use HasFactory;
 
-    protected $table = 'StockHistory';
+    protected $table = 'historical_data';
 }
