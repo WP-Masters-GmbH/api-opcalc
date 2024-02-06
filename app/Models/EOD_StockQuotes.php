@@ -19,19 +19,13 @@ class EOD_StockQuotes extends Model
         // Prepare Symbols Data
         $symbols = [];
         foreach($rows as $row) {
-            $symbols[$row['symbol']][$row['date']] = $row;
-
-            uksort($symbols[$row['symbol']], function($a, $b) {
-                return -strcmp($a, $b);
-            });
+            if(isset($symbols[$row['symbol']]['date']) && strtotime($symbols[$row['symbol']]['date']) < strtotime($row['date'])) {
+                $symbols[$row['symbol']] = $row;
+            } elseif(!isset($symbols[$row['symbol']]['date'])) {
+                $symbols[$row['symbol']] = $row;
+            }
         }
 
-
-        $final_data = [];
-        foreach($symbols as $symbol => $symbol_data) {
-            $final_data[$symbol] = end($symbol_data);
-        }
-
-        return $final_data;
+        return $symbols;
     }
 }

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\StockPrice;
 use App\Models\StockHistory;
+use App\Models\EOD_OptionQuotes;
 use App\Models\EOD_StockQuotes;
+use Illuminate\Support\Facades\DB;
 
 class MarketDataController extends Controller
 {
@@ -24,8 +26,41 @@ class MarketDataController extends Controller
      */
     public function highestIVOptions()
     {
+        // Prepare Variables
+        $month = date('F');
+        $year = date('Y');
+        $table_data = [];
+
+        // Get Data
+        $stocks_list = StockPrice::select('stock_quotes.*')
+            ->joinSub(
+                StockPrice::select('symbol', DB::raw('MAX(quotedate) as latest_date'))
+                    ->groupBy('symbol'),
+                'latest_dates',
+                function ($join) {
+                    $join->on('stock_quotes.symbol', '=', 'latest_dates.symbol')
+                        ->on('stock_quotes.quotedate', '=', 'latest_dates.latest_date');
+                }
+            )->get()->toArray();
+
+        $options_list = EOD_OptionQuotes::select('eod_option_quotes.*')
+            ->joinSub(EOD_OptionQuotes::select('symbol', DB::raw('MAX(date) as latest_date'))->groupBy('symbol'),
+                'latest_dates',
+                function ($join) {
+                    $join->on('eod_option_quotes.symbol', '=', 'latest_dates.symbol')->on('eod_option_quotes.date', '=', 'latest_dates.latest_date');
+                }
+            )->get()->toArray();
+
+        // Prepare Table Data
+        $table_data = EOD_OptionQuotes::prepareHighestIVTable($options_list);
+        $stocks = StockPrice::prepareStocksSymbolsData($stocks_list);
+
         return view('pages.front.market-data.highest-iv-options', [
-            'title' => 'Highest IV Option contracts'
+            'title' => "Highest IV Option contracts for {$month} {$year}",
+            'month' => $month,
+            'year' => $year,
+            'table_data' => $table_data,
+            'stocks_list' => $stocks
         ]);
     }
 
@@ -34,8 +69,41 @@ class MarketDataController extends Controller
      */
     public function highestVolumeOptions()
     {
+        // Prepare Variables
+        $month = date('F');
+        $year = date('Y');
+        $table_data = [];
+
+        // Get Data
+        $stocks_list = StockPrice::select('stock_quotes.*')
+            ->joinSub(
+                StockPrice::select('symbol', DB::raw('MAX(quotedate) as latest_date'))
+                    ->groupBy('symbol'),
+                'latest_dates',
+                function ($join) {
+                    $join->on('stock_quotes.symbol', '=', 'latest_dates.symbol')
+                        ->on('stock_quotes.quotedate', '=', 'latest_dates.latest_date');
+                }
+            )->get()->toArray();
+
+        $options_list = EOD_OptionQuotes::select('eod_option_quotes.*')
+            ->joinSub(EOD_OptionQuotes::select('symbol', DB::raw('MAX(date) as latest_date'))->groupBy('symbol'),
+                'latest_dates',
+                function ($join) {
+                    $join->on('eod_option_quotes.symbol', '=', 'latest_dates.symbol')->on('eod_option_quotes.date', '=', 'latest_dates.latest_date');
+                }
+            )->get()->toArray();
+
+        // Prepare Table Data
+        $table_data = EOD_OptionQuotes::prepareHighestVolumeTable($options_list);
+        $stocks = StockPrice::prepareStocksSymbolsData($stocks_list);
+
         return view('pages.front.market-data.highest-volume-options', [
-            'title' => 'Highest Volume Option contracts'
+            'title' => "Highest Volume Option contracts for {$month} {$year}",
+            'month' => $month,
+            'year' => $year,
+            'table_data' => $table_data,
+            'stocks_list' => $stocks
         ]);
     }
 
@@ -44,8 +112,41 @@ class MarketDataController extends Controller
      */
     public function lowestIVOptions()
     {
+        // Prepare Variables
+        $month = date('F');
+        $year = date('Y');
+        $table_data = [];
+
+        // Get Data
+        $stocks_list = StockPrice::select('stock_quotes.*')
+            ->joinSub(
+                StockPrice::select('symbol', DB::raw('MAX(quotedate) as latest_date'))
+                    ->groupBy('symbol'),
+                'latest_dates',
+                function ($join) {
+                    $join->on('stock_quotes.symbol', '=', 'latest_dates.symbol')
+                        ->on('stock_quotes.quotedate', '=', 'latest_dates.latest_date');
+                }
+            )->get()->toArray();
+
+        $options_list = EOD_OptionQuotes::select('eod_option_quotes.*')
+            ->joinSub(EOD_OptionQuotes::select('symbol', DB::raw('MAX(date) as latest_date'))->groupBy('symbol'),
+                'latest_dates',
+                function ($join) {
+                    $join->on('eod_option_quotes.symbol', '=', 'latest_dates.symbol')->on('eod_option_quotes.date', '=', 'latest_dates.latest_date');
+                }
+            )->get()->toArray();
+
+        // Prepare Table Data
+        $table_data = EOD_OptionQuotes::prepareLowestIVTable($options_list);
+        $stocks = StockPrice::prepareStocksSymbolsData($stocks_list);
+
         return view('pages.front.market-data.lowest-iv-options', [
-            'title' => 'Lowest IV Option contracts'
+            'title' => "Lowest IV Option contracts for {$month} {$year}",
+            'month' => $month,
+            'year' => $year,
+            'table_data' => $table_data,
+            'stocks_list' => $stocks
         ]);
     }
 
@@ -54,8 +155,41 @@ class MarketDataController extends Controller
      */
     public function lowestVolumeOptions()
     {
+        // Prepare Variables
+        $month = date('F');
+        $year = date('Y');
+        $table_data = [];
+
+        // Get Data
+        $stocks_list = StockPrice::select('stock_quotes.*')
+            ->joinSub(
+                StockPrice::select('symbol', DB::raw('MAX(quotedate) as latest_date'))
+                    ->groupBy('symbol'),
+                'latest_dates',
+                function ($join) {
+                    $join->on('stock_quotes.symbol', '=', 'latest_dates.symbol')
+                        ->on('stock_quotes.quotedate', '=', 'latest_dates.latest_date');
+                }
+            )->get()->toArray();
+
+        $options_list = EOD_OptionQuotes::select('eod_option_quotes.*')
+            ->joinSub(EOD_OptionQuotes::select('symbol', DB::raw('MAX(date) as latest_date'))->groupBy('symbol'),
+                'latest_dates',
+                function ($join) {
+                    $join->on('eod_option_quotes.symbol', '=', 'latest_dates.symbol')->on('eod_option_quotes.date', '=', 'latest_dates.latest_date');
+                }
+            )->get()->toArray();
+
+        // Prepare Table Data
+        $table_data = EOD_OptionQuotes::prepareLowestVolumeTable($options_list);
+        $stocks = StockPrice::prepareStocksSymbolsData($stocks_list);
+
         return view('pages.front.market-data.lowest-volume-options', [
-            'title' => 'Lowest Volume Option contracts'
+            'title' => "Lowest Volume Option contracts for {$month} {$year}",
+            'month' => $month,
+            'year' => $year,
+            'table_data' => $table_data,
+            'stocks_list' => $stocks
         ]);
     }
 

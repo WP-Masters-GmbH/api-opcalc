@@ -18,9 +18,9 @@
 
                             $index = 0;
                             foreach($table_data as $symbol => $symbol_data) :
-
+                                $market = $stocks_list[$symbol]['close'];
                             ?>
-                        {id:<?php echo $index; ?>, symbol:"<?php echo $symbol; ?>", market:"<?php echo $market; ?>", change:"<?php echo $change; ?>", volume:"<?php echo $volume; ?>", type:"<?php echo $type; ?>", strike:"<?php echo $strike; ?>", price:"<?php echo $price; ?>", expiry:"<?php echo $expiry; ?>", earnings:"<?php echo $earnings; ?>"},
+                        {id:<?php echo $index; ?>, symbol:"<?php echo $symbol; ?>", market:"<?php echo $market; ?>", change:"<?php echo $symbol_data['change_percent']; ?>", volume:"<?php echo $symbol_data['volume']; ?>", type:"<?php echo ucfirst($symbol_data['putCall']); ?>", strike:"<?php echo $symbol_data['strikePrice']; ?>", price:"<?php echo $symbol_data['price']; ?>", expiry:"<?php echo $symbol_data['expiration']; ?>", earnings:"<?php echo $symbol_data['expiration']; ?>"},
                         <?php $index++; endforeach; ?>
                         <?php endif; ?>
                     ];
@@ -54,7 +54,7 @@
                         paginationCounter:"rows", //display count of paginated rows in footer
                         movableColumns:true,      //allow column order to be changed
                         initialSort:[             //set the initial sort order of the data
-                            {column:"beta", dir:"desc"},
+                            {column:"volume", dir:"desc"},
                         ],
                         columnDefaults:{
                             tooltip:true,         //show tool tips on cells

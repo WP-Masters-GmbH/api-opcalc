@@ -14,6 +14,20 @@ class StockPrice extends Model
     /**
      * prepare Data for Beta Stocks Table
      */
+    public static function prepareStocksSymbolsData($rows)
+    {
+        // Prepare Symbols Data
+        $symbols = [];
+        foreach($rows as $row) {
+            $symbols[$row['symbol']] = $row;
+        }
+
+        return $symbols;
+    }
+
+    /**
+     * prepare Data for Beta Stocks Table
+     */
     public static function prepareBetaStocksData($rows)
     {
         // Prepare Symbols Data
