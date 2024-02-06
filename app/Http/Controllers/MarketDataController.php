@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\StockPrice;
+use App\Models\StockHistory;
+use App\Models\EOD_StockQuotes;
 
 class MarketDataController extends Controller
 {
@@ -93,8 +96,26 @@ class MarketDataController extends Controller
      */
     public function highestBetaStocks()
     {
+        // Prepare Variables
+        $stocks = ['MSFT', 'AAPL', 'GOOGL', 'AMZN', 'NVDA', 'META', 'BRK.B', 'LLY', 'TSLA', 'AVGO', 'V', 'TSM', 'JPM', 'NVO', 'UNH', 'WMT', 'MA', 'XOM', 'JNJ', 'PG', 'HD', 'ASML', 'MRK', 'ORCL', 'COST', 'ABBV', 'AMD', 'ADBE', 'CVX', 'CRM', 'TM', 'BAC', 'KO', 'NFLX', 'PEP', 'ACN', 'MCD', 'TMO', 'SAP', 'NVS', 'SHEL', 'CSCO', 'AZN', 'LIN', 'ABT', 'TMUS', 'BABA', 'DHR', 'CMCSA', 'INTC', 'INTU', 'WFC', 'DIS', 'VZ', 'AMGN', 'IBM', 'PDD', 'CAT', 'NOW', 'QCOM', 'BHP', 'TTE', 'NKE', 'PFE', 'HSBC', 'UNP', 'AXP', 'BX', 'GE', 'TXN', 'PM', 'SPGI', 'MS', 'UBER', 'AMAT', 'RY', 'ISRG', 'RTX', 'COP', 'SYK', 'HON', 'HDB', 'T', 'BA', 'GS', 'LOW', 'BKNG', 'BUD', 'UL', 'SONY', 'UPS', 'RIO', 'PLD', 'NEE', 'SNY', 'BLK', 'MDT', 'ELV', 'SCHW'];
+        $month = date('F');
+        $year = date('Y');
+        $table_data = [];
+
+        // Get Data
+        $stocks_list = StockPrice::whereIn('symbol', $stocks)->whereYear('quotedate', '>=', 2020)->get()->toArray();
+        $eod_stocks = EOD_StockQuotes::whereIn('symbol', $stocks)->get()->toArray();
+
+        // Prepare Table Data
+        $table_data = StockPrice::prepareBetaStocksData($stocks_list);
+        $market_data = EOD_StockQuotes::prepareMarketData($eod_stocks);
+
         return view('pages.front.market-data.highest-beta-stocks', [
-            'title' => 'Highest Beta Stocks'
+            'title' => "Highest Beta Stocks for {$month} {$year}",
+            'month' => $month,
+            'year' => $year,
+            'table_data' => $table_data,
+            'market_data' => $market_data
         ]);
     }
 
@@ -103,8 +124,26 @@ class MarketDataController extends Controller
      */
     public function lowestBetaStocks()
     {
+        // Prepare Variables
+        $stocks = ['MSFT', 'AAPL', 'GOOGL', 'AMZN', 'NVDA', 'META', 'BRK.B', 'LLY', 'TSLA', 'AVGO', 'V', 'TSM', 'JPM', 'NVO', 'UNH', 'WMT', 'MA', 'XOM', 'JNJ', 'PG', 'HD', 'ASML', 'MRK', 'ORCL', 'COST', 'ABBV', 'AMD', 'ADBE', 'CVX', 'CRM', 'TM', 'BAC', 'KO', 'NFLX', 'PEP', 'ACN', 'MCD', 'TMO', 'SAP', 'NVS', 'SHEL', 'CSCO', 'AZN', 'LIN', 'ABT', 'TMUS', 'BABA', 'DHR', 'CMCSA', 'INTC', 'INTU', 'WFC', 'DIS', 'VZ', 'AMGN', 'IBM', 'PDD', 'CAT', 'NOW', 'QCOM', 'BHP', 'TTE', 'NKE', 'PFE', 'HSBC', 'UNP', 'AXP', 'BX', 'GE', 'TXN', 'PM', 'SPGI', 'MS', 'UBER', 'AMAT', 'RY', 'ISRG', 'RTX', 'COP', 'SYK', 'HON', 'HDB', 'T', 'BA', 'GS', 'LOW', 'BKNG', 'BUD', 'UL', 'SONY', 'UPS', 'RIO', 'PLD', 'NEE', 'SNY', 'BLK', 'MDT', 'ELV', 'SCHW'];
+        $month = date('F');
+        $year = date('Y');
+        $table_data = [];
+
+        // Get Data
+        $stocks_list = StockPrice::whereIn('symbol', $stocks)->whereYear('quotedate', '>=', 2020)->get()->toArray();
+        $eod_stocks = EOD_StockQuotes::whereIn('symbol', $stocks)->get()->toArray();
+
+        // Prepare Table Data
+        $table_data = StockPrice::prepareBetaStocksData($stocks_list);
+        $market_data = EOD_StockQuotes::prepareMarketData($eod_stocks);
+
         return view('pages.front.market-data.lowest-beta-stocks', [
-            'title' => 'Lowest Beta stocks'
+            'title' => "Lowest Beta Stocks for {$month} {$year}",
+            'month' => $month,
+            'year' => $year,
+            'table_data' => $table_data,
+            'market_data' => $market_data
         ]);
     }
 

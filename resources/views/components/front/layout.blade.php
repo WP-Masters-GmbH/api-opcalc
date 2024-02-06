@@ -11,12 +11,15 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Montserrat:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="{{ url('/libs/tabulator/tabulator.min.css') }}">
     <link rel="stylesheet" href="{{ url('/assets/style.css?' . time()) }}">
     <link rel="stylesheet" href="{{ url('/assets/vr_style.css?' . time()) }}">
+    <script src="{{ url('/libs/jquery.min.js') }}"></script>
 </head>
 <body>
     <x-front.header></x-front.header>
     {{ $slot }}
+    <script src="{{ url('/libs/tabulator/tabulator.min.js') }}"></script>
     <script src="{{ url('/assets/main.js?' . time()) }}"></script>
     <script src="{{ url('/assets/vr_main.js?' . time()) }}"></script>
     <x-front.footer></x-front.footer>
