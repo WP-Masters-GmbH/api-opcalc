@@ -22,8 +22,8 @@
                             $close_price = round($row['close'], 2);
 
                             // Other Table Data
-                            $market_cap = $market_data[$symbol]['market_cap'];
-                            $beta = $market_data[$symbol]['beta'];
+                            $market_cap = isset($market_data[$symbol]['market_cap']) ? $market_data[$symbol]['market_cap'] : 0;
+                            $beta = isset($market_data[$symbol]['beta']) ? $market_data[$symbol]['beta'] : 0;
 
                             // Calculate Change
                             $change = 'n/a';
@@ -33,14 +33,14 @@
 
                             // Calculate One Year
                             $one_year = 'n/a';
-                            if(isset($symbol_data[0]['close']) && $symbol_data[0]['close'] > 0 && isset($symbol_data[2]['close']) && $symbol_data[2]['close'] > 0) {
-                                $one_year = round((($symbol_data[0]['close'] - $symbol_data[2]['close']) / $symbol_data[0]['close']) * 100, 2);
+                            if(isset($market_data[$symbol]['1yr'])) {
+                                $one_year = round($market_data[$symbol]['1yr'], 2);
                             }
 
                             // Calculate Three Years
                             $three_years = 'n/a';
-                            if(isset($symbol_data[0]['close']) && $symbol_data[0]['close'] > 0 && isset($symbol_data[3]['close']) && $symbol_data[3]['close'] > 0) {
-                                $three_years = round((($symbol_data[0]['close'] - $symbol_data[3]['close']) / $symbol_data[0]['close']) * 100, 2);
+                            if(isset($market_data[$symbol]['3yr'])) {
+                                $three_years = round($market_data[$symbol]['3yr'], 2);
                             }
                             ?>
                         {id:<?php echo $index; ?>, symbol:"<?php echo $symbol; ?>", market:"<?php echo $close_price; ?>", change:"<?php echo $change; ?>", one_year:"<?php echo $one_year; ?>", three_year:"<?php echo $three_years; ?>", market_cap:"<?php echo $market_cap; ?>", beta:"<?php echo $beta; ?>"},

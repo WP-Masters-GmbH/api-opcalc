@@ -7,6 +7,8 @@ use App\Models\StockPrice;
 use App\Models\StockHistory;
 use App\Models\EOD_OptionQuotes;
 use App\Models\EOD_StockQuotes;
+use App\Models\DividendHistory;
+use App\Models\EarningsEstimate;
 use Illuminate\Support\Facades\DB;
 
 class MarketDataController extends Controller
@@ -51,16 +53,23 @@ class MarketDataController extends Controller
                 }
             )->get()->toArray();
 
+        $latestIds = EarningsEstimate::selectRaw('MAX(id) as max_id')->groupBy('symbol');
+        $uniqueEarningsEstimates = EarningsEstimate::joinSub($latestIds, 'latest_ids', function ($join) {
+            $join->on('earnings_estimate.id', '=', 'latest_ids.max_id');
+        })->orderBy('earnings_estimate.id', 'desc')->get()->toArray();
+
         // Prepare Table Data
         $table_data = EOD_OptionQuotes::prepareHighestIVTable($options_list);
         $stocks = StockPrice::prepareStocksSymbolsData($stocks_list);
+        $earnings_estimates = EarningsEstimate::prepareMarketData($uniqueEarningsEstimates);
 
         return view('pages.front.market-data.highest-iv-options', [
             'title' => "Highest IV Option contracts for {$month} {$year}",
             'month' => $month,
             'year' => $year,
             'table_data' => $table_data,
-            'stocks_list' => $stocks
+            'stocks_list' => $stocks,
+            'earnings_estimates' => $earnings_estimates
         ]);
     }
 
@@ -94,16 +103,23 @@ class MarketDataController extends Controller
                 }
             )->get()->toArray();
 
+        $latestIds = EarningsEstimate::selectRaw('MAX(id) as max_id')->groupBy('symbol');
+        $uniqueEarningsEstimates = EarningsEstimate::joinSub($latestIds, 'latest_ids', function ($join) {
+            $join->on('earnings_estimate.id', '=', 'latest_ids.max_id');
+        })->orderBy('earnings_estimate.id', 'desc')->get()->toArray();
+
         // Prepare Table Data
         $table_data = EOD_OptionQuotes::prepareHighestVolumeTable($options_list);
         $stocks = StockPrice::prepareStocksSymbolsData($stocks_list);
+        $earnings_estimates = EarningsEstimate::prepareMarketData($uniqueEarningsEstimates);
 
         return view('pages.front.market-data.highest-volume-options', [
             'title' => "Highest Volume Option contracts for {$month} {$year}",
             'month' => $month,
             'year' => $year,
             'table_data' => $table_data,
-            'stocks_list' => $stocks
+            'stocks_list' => $stocks,
+            'earnings_estimates' => $earnings_estimates
         ]);
     }
 
@@ -137,6 +153,12 @@ class MarketDataController extends Controller
                 }
             )->get()->toArray();
 
+        $latestIds = EarningsEstimate::selectRaw('MAX(id) as max_id')->groupBy('symbol');
+        $uniqueEarningsEstimates = EarningsEstimate::joinSub($latestIds, 'latest_ids', function ($join) {
+            $join->on('earnings_estimate.id', '=', 'latest_ids.max_id');
+        })->orderBy('earnings_estimate.id', 'desc')->get()->toArray();
+        $earnings_estimates = EarningsEstimate::prepareMarketData($uniqueEarningsEstimates);
+
         // Prepare Table Data
         $table_data = EOD_OptionQuotes::prepareLowestIVTable($options_list);
         $stocks = StockPrice::prepareStocksSymbolsData($stocks_list);
@@ -146,7 +168,8 @@ class MarketDataController extends Controller
             'month' => $month,
             'year' => $year,
             'table_data' => $table_data,
-            'stocks_list' => $stocks
+            'stocks_list' => $stocks,
+            'earnings_estimates' => $earnings_estimates
         ]);
     }
 
@@ -180,16 +203,23 @@ class MarketDataController extends Controller
                 }
             )->get()->toArray();
 
+        $latestIds = EarningsEstimate::selectRaw('MAX(id) as max_id')->groupBy('symbol');
+        $uniqueEarningsEstimates = EarningsEstimate::joinSub($latestIds, 'latest_ids', function ($join) {
+            $join->on('earnings_estimate.id', '=', 'latest_ids.max_id');
+        })->orderBy('earnings_estimate.id', 'desc')->get()->toArray();
+
         // Prepare Table Data
         $table_data = EOD_OptionQuotes::prepareLowestVolumeTable($options_list);
         $stocks = StockPrice::prepareStocksSymbolsData($stocks_list);
+        $earnings_estimates = EarningsEstimate::prepareMarketData($uniqueEarningsEstimates);
 
         return view('pages.front.market-data.lowest-volume-options', [
             'title' => "Lowest Volume Option contracts for {$month} {$year}",
             'month' => $month,
             'year' => $year,
             'table_data' => $table_data,
-            'stocks_list' => $stocks
+            'stocks_list' => $stocks,
+            'earnings_estimates' => $earnings_estimates
         ]);
     }
 
@@ -237,7 +267,19 @@ class MarketDataController extends Controller
         $table_data = [];
 
         // Get Data
-        $stocks_list = StockPrice::whereIn('symbol', $stocks)->whereYear('quotedate', '>=', 2020)->get()->toArray();
+        $stocks_list = StockPrice::whereIn('symbol', $stocks)
+            ->whereIn('quotedate', function($query) use ($stocks) {
+                $query->selectRaw('quotedate')
+                    ->from('stock_quotes')
+                    ->whereIn('symbol', $stocks)
+                    ->groupBy('symbol', 'quotedate')
+                    ->orderBy('symbol')
+                    ->orderBy('quotedate', 'desc')
+                    ->limit(2);
+            })
+            ->get()
+            ->toArray();
+
         $eod_stocks = EOD_StockQuotes::whereIn('symbol', $stocks)->get()->toArray();
 
         // Prepare Table Data
@@ -265,7 +307,19 @@ class MarketDataController extends Controller
         $table_data = [];
 
         // Get Data
-        $stocks_list = StockPrice::whereIn('symbol', $stocks)->whereYear('quotedate', '>=', 2020)->get()->toArray();
+        $stocks_list = StockPrice::whereIn('symbol', $stocks)
+            ->whereIn('quotedate', function($query) use ($stocks) {
+                $query->selectRaw('quotedate')
+                    ->from('stock_quotes')
+                    ->whereIn('symbol', $stocks)
+                    ->groupBy('symbol', 'quotedate')
+                    ->orderBy('symbol')
+                    ->orderBy('quotedate', 'desc')
+                    ->limit(2);
+            })
+            ->get()
+            ->toArray();
+
         $eod_stocks = EOD_StockQuotes::whereIn('symbol', $stocks)->get()->toArray();
 
         // Prepare Table Data
@@ -298,9 +352,14 @@ class MarketDataController extends Controller
      */
     public function dividendHistory($symbol)
     {
+        $table_data = DividendHistory::where('symbol', $symbol)->orderBy('ex_date', 'desc')->get()->toArray();
+
         return view('pages.front.market-data.dividend-history', [
             'title' => 'Dividend History',
-            'symbol' => $symbol
+            'symbol' => $symbol,
+            'first_date' => !empty($table_data) ? end($table_data)['ex_date'] : date('Y-m-d'),
+            'current_date' => !empty($table_data) ? $table_data[0]['ex_date'] : date('Y-m-d'),
+            'table_data' => $table_data
         ]);
     }
 

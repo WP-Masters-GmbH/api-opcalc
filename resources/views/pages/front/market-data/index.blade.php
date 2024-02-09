@@ -6,9 +6,9 @@
             <div class="list-links">
                 <h2>Free financial tools</h2>
                 <ul>
-                    <li><a href="https://www.optionsprofitcalculator.com" target="_blank">Options Profit Calculator</a></li>
-                    <li><a href="{{ route('dollar-cost-averaging-calculator') }}">DCA (Dollar Cost Averaging Calculator)</a></li>
-                    <li><a href="{{ route('earnings-simulator') }}">Earning simulator</a></li>
+                    <li><a href="https://www.optionsprofitcalculator.com" target="_blank">Options Profit Calculator</a> - Our core visualization tool for optimizing options trades </li>
+                    <li><a href="{{ route('dollar-cost-averaging-calculator') }}">DCA (Dollar Cost Averaging Calculator)</a> - search any equity asset and see how much profit could of been yielding throughout the past</li>
+                    <li><a href="{{ route('earnings-simulator') }}">Earning simulator</a> - Take a peak into the future and see what could happen after earning reports for your favorite stocks</li>
                 </ul>
             </div>
 
@@ -19,8 +19,8 @@
                     <li><a href="{{ route('highest-volume-options') }}">Highest Volume Option contracts</a></li>
                     <li><a href="{{ route('lowest-iv-options') }}">Lowest IV Option contracts</a></li>
                     <li><a href="{{ route('lowest-volume-options') }}">Lowest Volume Option contracts</a></li>
-                    <li><a href="{{ route('option-pinning-strategy') }}">Option Pin Theory</a></li>
-                    <li><a href="{{ route('eod-option-chains', ['AAPL', date('Y-m-d')]) }}">EOD option prices</a></li>
+                    <li><a href="{{ route('option-pinning-strategy') }}">Option Pin Theory</a> - Revealing Strategic Strike Prices for Traders</li>
+                    <li><a href="{{ route('eod-option-chains', ['AAPL', date('Y-m-d')]) }}">EOD option prices</a> - View all open, high, low, and closing prices for all option contracts</li>
                     <li><a href="{{ route('all-usa-stocks') }}">List of all stocks with tradable options</a></li>
                 </ul>
             </div>
@@ -29,9 +29,9 @@
                 <h2>Stocks Data</h2>
                 <ul>
                     <li><a href="{{ route('stocks-by-market-cap') }}">Stocks listed by MarketCap</a></li>
-                    <li><a href="{{ route('highest-beta-stocks') }}">Highest Beta Stocks</a></li>
-                    <li><a href="{{ route('lowest-beta-stocks') }}">Lowest Beta stocks</a></li>
-                    <li><a href="{{ route('eod-stock-prices', ['AAPL', date('Y-m-d')]) }}">EOD stock data</a></li>
+                    <li><a href="{{ route('highest-beta-stocks') }}">Highest Beta Stocks</a> - View stocks with the highest beta score</li>
+                    <li><a href="{{ route('lowest-beta-stocks') }}">Lowest Beta stocks</a> - View stocks with the lowest beta score</li>
+                    <li><a href="{{ route('eod-stock-prices', ['AAPL', date('Y-m-d')]) }}">EOD stock data</a> - View all open, high, low, and closing prices for all option contracts</li>
                 </ul>
             </div>
 
@@ -42,7 +42,7 @@
                     <li><a href="{{ route('highest-dividend-yield-stocks') }}">Stocks with highest dividend yield</a></li>
                     <li><a href="{{ route('upcoming-ex-dividend-dates') }}">Upcoming ex-dividend dates</a></li>
                     <li><a href="{{ route('monthly-dividend-stocks') }}">Stocks with monthly dividends</a></li>
-                    <li><a href="{{ route('blog') }}">Our Blog</a></li>
+                    <li><a href="{{ route('blog') }}">Our Blog</a> - About everything you need to know about Dividends and Options trading</li>
                 </ul>
             </div>
 

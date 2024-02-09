@@ -20,8 +20,9 @@
                             foreach($table_data as $symbol => $symbol_data) :
                             $market = $stocks_list[$symbol]['close'];
                             $volatility = round($symbol_data['volatility'], 2).'%';
+                            $earnings = isset($earnings_estimates[$symbol]['est_earnings_date']) ? $earnings_estimates[$symbol]['est_earnings_date'] : $symbol_data['expiration'];
                             ?>
-                        {id:<?php echo $index; ?>, symbol:"<?php echo $symbol; ?>", market:"<?php echo $market; ?>", change:"<?php echo $symbol_data['change_percent']; ?>", iv:"<?php echo $volatility; ?>", type:"<?php echo ucfirst($symbol_data['putCall']); ?>", strike:"<?php echo $symbol_data['strikePrice']; ?>", price:"<?php echo $symbol_data['price']; ?>", expiry:"<?php echo $symbol_data['expiration']; ?>", earnings:"<?php echo $symbol_data['expiration']; ?>"},
+                        {id:<?php echo $index; ?>, symbol:"<?php echo $symbol; ?>", market:"<?php echo $market; ?>", change:"<?php echo $symbol_data['change_percent']; ?>", iv:"<?php echo $volatility; ?>", type:"<?php echo ucfirst($symbol_data['putCall']); ?>", strike:"<?php echo $symbol_data['strikePrice']; ?>", price:"<?php echo $symbol_data['price']; ?>", expiry:"<?php echo $symbol_data['expiration']; ?>", earnings:"<?php echo $earnings; ?>"},
                         <?php $index++; endforeach; ?>
                         <?php endif; ?>
                     ];
