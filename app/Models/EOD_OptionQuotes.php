@@ -14,6 +14,21 @@ class EOD_OptionQuotes extends Model
     /**
      * Prepare Data for IV Table
      */
+    public static function getSymbolsFromRows($rows)
+    {
+        $symbols = [];
+        foreach($rows as $row) {
+            if(!in_array($row['symbol'], $symbols)) {
+                $symbols[] = $row['symbol'];
+            }
+        }
+
+        return $symbols;
+    }
+
+    /**
+     * Prepare Data for IV Table
+     */
     public static function prepareLowestIVTable($rows)
     {
         $symbols = [];

@@ -34,29 +34,62 @@ class MarketDataController extends Controller
         $table_data = [];
 
         // Get Data
+        $options_list = EOD_OptionQuotes::select('eod_option_quotes.*')
+            ->joinSub(
+                EOD_OptionQuotes::select('symbol', DB::raw('MAX(date) as latest_date'))
+                    ->groupBy('symbol'),
+                'latest_dates',
+                function ($join) {
+                    $join->on('eod_option_quotes.symbol', '=', 'latest_dates.symbol')
+                        ->on('eod_option_quotes.date', '=', 'latest_dates.latest_date');
+                }
+            )
+            ->joinSub(
+                EOD_OptionQuotes::select('symbol', 'date', DB::raw('MAX(volatility) as max_volatility'))
+                    ->groupBy('symbol', 'date'),
+                'max_volatilities',
+                function ($join) {
+                    $join->on('eod_option_quotes.symbol', '=', 'max_volatilities.symbol')
+                        ->on('eod_option_quotes.date', '=', 'max_volatilities.date')
+                        ->on('eod_option_quotes.volatility', '=', 'max_volatilities.max_volatility');
+                }
+            )
+            ->orderBy('eod_option_quotes.symbol')
+            ->orderBy('eod_option_quotes.volatility', 'DESC')
+            ->distinct('eod_option_quotes.symbol')
+            ->take(500)
+            ->get()
+            ->toArray();
+
+        $symbols = EOD_OptionQuotes::getSymbolsFromRows($options_list);
+
+        // Get Data
         $stocks_list = StockPrice::select('stock_quotes.*')
             ->joinSub(
                 StockPrice::select('symbol', DB::raw('MAX(quotedate) as latest_date'))
+                    ->whereIn('symbol', $symbols) // Добавляем фильтрацию по символам
                     ->groupBy('symbol'),
                 'latest_dates',
                 function ($join) {
                     $join->on('stock_quotes.symbol', '=', 'latest_dates.symbol')
                         ->on('stock_quotes.quotedate', '=', 'latest_dates.latest_date');
                 }
-            )->get()->toArray();
+            )
+            ->whereIn('stock_quotes.symbol', $symbols) // Дополнительная фильтрация после соединения
+            ->get()
+            ->toArray();
 
-        $options_list = EOD_OptionQuotes::select('eod_option_quotes.*')
-            ->joinSub(EOD_OptionQuotes::select('symbol', DB::raw('MAX(date) as latest_date'))->groupBy('symbol'),
-                'latest_dates',
-                function ($join) {
-                    $join->on('eod_option_quotes.symbol', '=', 'latest_dates.symbol')->on('eod_option_quotes.date', '=', 'latest_dates.latest_date');
-                }
-            )->get()->toArray();
+        $latestIds = EarningsEstimate::selectRaw('MAX(id) as max_id')
+            ->whereIn('symbol', $symbols) // Добавляем фильтрацию по символам
+            ->groupBy('symbol');
 
-        $latestIds = EarningsEstimate::selectRaw('MAX(id) as max_id')->groupBy('symbol');
         $uniqueEarningsEstimates = EarningsEstimate::joinSub($latestIds, 'latest_ids', function ($join) {
             $join->on('earnings_estimate.id', '=', 'latest_ids.max_id');
-        })->orderBy('earnings_estimate.id', 'desc')->get()->toArray();
+        })
+            ->whereIn('earnings_estimate.symbol', $symbols) // Дополнительная фильтрация после соединения
+            ->orderBy('earnings_estimate.id', 'desc')
+            ->get()
+            ->toArray();
 
         // Prepare Table Data
         $table_data = EOD_OptionQuotes::prepareHighestIVTable($options_list);
@@ -83,30 +116,62 @@ class MarketDataController extends Controller
         $year = date('Y');
         $table_data = [];
 
+        $options_list = EOD_OptionQuotes::select('eod_option_quotes.*')
+            ->joinSub(
+                EOD_OptionQuotes::select('symbol', DB::raw('MAX(date) as latest_date'))
+                    ->groupBy('symbol'),
+                'latest_dates',
+                function ($join) {
+                    $join->on('eod_option_quotes.symbol', '=', 'latest_dates.symbol')
+                        ->on('eod_option_quotes.date', '=', 'latest_dates.latest_date');
+                }
+            )
+            ->joinSub(
+                EOD_OptionQuotes::select('symbol', 'date', DB::raw('MAX(volume) as max_volume'))
+                    ->groupBy('symbol', 'date'),
+                'max_volumes',
+                function ($join) {
+                    $join->on('eod_option_quotes.symbol', '=', 'max_volumes.symbol')
+                        ->on('eod_option_quotes.date', '=', 'max_volumes.date')
+                        ->on('eod_option_quotes.volume', '=', 'max_volumes.max_volume');
+                }
+            )
+            ->orderBy('eod_option_quotes.symbol')
+            ->orderBy('eod_option_quotes.volume', 'DESC')
+            ->distinct('eod_option_quotes.symbol')
+            ->take(500)
+            ->get()
+            ->toArray();
+
+        $symbols = EOD_OptionQuotes::getSymbolsFromRows($options_list);
+
         // Get Data
         $stocks_list = StockPrice::select('stock_quotes.*')
             ->joinSub(
                 StockPrice::select('symbol', DB::raw('MAX(quotedate) as latest_date'))
+                    ->whereIn('symbol', $symbols) // Добавляем фильтрацию по символам
                     ->groupBy('symbol'),
                 'latest_dates',
                 function ($join) {
                     $join->on('stock_quotes.symbol', '=', 'latest_dates.symbol')
                         ->on('stock_quotes.quotedate', '=', 'latest_dates.latest_date');
                 }
-            )->get()->toArray();
+            )
+            ->whereIn('stock_quotes.symbol', $symbols) // Дополнительная фильтрация после соединения
+            ->get()
+            ->toArray();
 
-        $options_list = EOD_OptionQuotes::select('eod_option_quotes.*')
-            ->joinSub(EOD_OptionQuotes::select('symbol', DB::raw('MAX(date) as latest_date'))->groupBy('symbol'),
-                'latest_dates',
-                function ($join) {
-                    $join->on('eod_option_quotes.symbol', '=', 'latest_dates.symbol')->on('eod_option_quotes.date', '=', 'latest_dates.latest_date');
-                }
-            )->get()->toArray();
+        $latestIds = EarningsEstimate::selectRaw('MAX(id) as max_id')
+            ->whereIn('symbol', $symbols) // Добавляем фильтрацию по символам
+            ->groupBy('symbol');
 
-        $latestIds = EarningsEstimate::selectRaw('MAX(id) as max_id')->groupBy('symbol');
         $uniqueEarningsEstimates = EarningsEstimate::joinSub($latestIds, 'latest_ids', function ($join) {
             $join->on('earnings_estimate.id', '=', 'latest_ids.max_id');
-        })->orderBy('earnings_estimate.id', 'desc')->get()->toArray();
+        })
+            ->whereIn('earnings_estimate.symbol', $symbols) // Дополнительная фильтрация после соединения
+            ->orderBy('earnings_estimate.id', 'desc')
+            ->get()
+            ->toArray();
 
         // Prepare Table Data
         $table_data = EOD_OptionQuotes::prepareHighestVolumeTable($options_list);
@@ -134,34 +199,68 @@ class MarketDataController extends Controller
         $table_data = [];
 
         // Get Data
+        $options_list = EOD_OptionQuotes::select('eod_option_quotes.*')
+            ->joinSub(
+                EOD_OptionQuotes::select('symbol', DB::raw('MAX(date) as latest_date'))
+                    ->groupBy('symbol'),
+                'latest_dates',
+                function ($join) {
+                    $join->on('eod_option_quotes.symbol', '=', 'latest_dates.symbol')
+                        ->on('eod_option_quotes.date', '=', 'latest_dates.latest_date');
+                }
+            )
+            ->joinSub(
+                EOD_OptionQuotes::select('symbol', 'date', DB::raw('MIN(volatility) as min_volatility'))
+                    ->where('volatility', '>', 0)
+                    ->groupBy('symbol', 'date'),
+                'min_volatilities',
+                function ($join) {
+                    $join->on('eod_option_quotes.symbol', '=', 'min_volatilities.symbol')
+                        ->on('eod_option_quotes.date', '=', 'min_volatilities.date')
+                        ->whereRaw('eod_option_quotes.volatility = min_volatilities.min_volatility');
+                }
+            )
+            ->orderBy('eod_option_quotes.symbol')
+            ->orderBy('eod_option_quotes.volatility', 'ASC')
+            ->distinct('eod_option_quotes.symbol')
+            ->take(500)
+            ->get()
+            ->toArray();
+
+        $symbols = EOD_OptionQuotes::getSymbolsFromRows($options_list);
+
+        // Get Data
         $stocks_list = StockPrice::select('stock_quotes.*')
             ->joinSub(
                 StockPrice::select('symbol', DB::raw('MAX(quotedate) as latest_date'))
+                    ->whereIn('symbol', $symbols) // Добавляем фильтрацию по символам
                     ->groupBy('symbol'),
                 'latest_dates',
                 function ($join) {
                     $join->on('stock_quotes.symbol', '=', 'latest_dates.symbol')
                         ->on('stock_quotes.quotedate', '=', 'latest_dates.latest_date');
                 }
-            )->get()->toArray();
+            )
+            ->whereIn('stock_quotes.symbol', $symbols) // Дополнительная фильтрация после соединения
+            ->get()
+            ->toArray();
 
-        $options_list = EOD_OptionQuotes::select('eod_option_quotes.*')
-            ->joinSub(EOD_OptionQuotes::select('symbol', DB::raw('MAX(date) as latest_date'))->groupBy('symbol'),
-                'latest_dates',
-                function ($join) {
-                    $join->on('eod_option_quotes.symbol', '=', 'latest_dates.symbol')->on('eod_option_quotes.date', '=', 'latest_dates.latest_date');
-                }
-            )->get()->toArray();
+        $latestIds = EarningsEstimate::selectRaw('MAX(id) as max_id')
+            ->whereIn('symbol', $symbols) // Добавляем фильтрацию по символам
+            ->groupBy('symbol');
 
-        $latestIds = EarningsEstimate::selectRaw('MAX(id) as max_id')->groupBy('symbol');
         $uniqueEarningsEstimates = EarningsEstimate::joinSub($latestIds, 'latest_ids', function ($join) {
             $join->on('earnings_estimate.id', '=', 'latest_ids.max_id');
-        })->orderBy('earnings_estimate.id', 'desc')->get()->toArray();
-        $earnings_estimates = EarningsEstimate::prepareMarketData($uniqueEarningsEstimates);
+        })
+            ->whereIn('earnings_estimate.symbol', $symbols) // Дополнительная фильтрация после соединения
+            ->orderBy('earnings_estimate.id', 'desc')
+            ->get()
+            ->toArray();
 
         // Prepare Table Data
         $table_data = EOD_OptionQuotes::prepareLowestIVTable($options_list);
         $stocks = StockPrice::prepareStocksSymbolsData($stocks_list);
+        $earnings_estimates = EarningsEstimate::prepareMarketData($uniqueEarningsEstimates);
 
         return view('pages.front.market-data.lowest-iv-options', [
             'title' => "Lowest IV Option contracts for {$month} {$year}",
@@ -184,29 +283,64 @@ class MarketDataController extends Controller
         $table_data = [];
 
         // Get Data
+        $options_list = EOD_OptionQuotes::select('eod_option_quotes.*')
+            ->joinSub(
+                EOD_OptionQuotes::select('symbol', DB::raw('MAX(date) as latest_date'))
+                    ->groupBy('symbol'),
+                'latest_dates',
+                function ($join) {
+                    $join->on('eod_option_quotes.symbol', '=', 'latest_dates.symbol')
+                        ->on('eod_option_quotes.date', '=', 'latest_dates.latest_date');
+                }
+            )
+            ->joinSub(
+                EOD_OptionQuotes::select('symbol', 'date', DB::raw('MIN(volume) as min_volume'))
+                    ->where('volume', '>', 0)
+                    ->groupBy('symbol', 'date'),
+                'min_volumes',
+                function ($join) {
+                    $join->on('eod_option_quotes.symbol', '=', 'min_volumes.symbol')
+                        ->on('eod_option_quotes.date', '=', 'min_volumes.date')
+                        ->on('eod_option_quotes.volume', '=', 'min_volumes.min_volume');
+                }
+            )
+            ->orderBy('eod_option_quotes.symbol')
+            ->orderBy('eod_option_quotes.volume', 'ASC')
+            ->distinct('eod_option_quotes.symbol')
+            ->take(500)
+            ->get()
+            ->toArray();
+
+
+        $symbols = EOD_OptionQuotes::getSymbolsFromRows($options_list);
+
+        // Get Data
         $stocks_list = StockPrice::select('stock_quotes.*')
             ->joinSub(
                 StockPrice::select('symbol', DB::raw('MAX(quotedate) as latest_date'))
+                    ->whereIn('symbol', $symbols) // Добавляем фильтрацию по символам
                     ->groupBy('symbol'),
                 'latest_dates',
                 function ($join) {
                     $join->on('stock_quotes.symbol', '=', 'latest_dates.symbol')
                         ->on('stock_quotes.quotedate', '=', 'latest_dates.latest_date');
                 }
-            )->get()->toArray();
+            )
+            ->whereIn('stock_quotes.symbol', $symbols) // Дополнительная фильтрация после соединения
+            ->get()
+            ->toArray();
 
-        $options_list = EOD_OptionQuotes::select('eod_option_quotes.*')
-            ->joinSub(EOD_OptionQuotes::select('symbol', DB::raw('MAX(date) as latest_date'))->groupBy('symbol'),
-                'latest_dates',
-                function ($join) {
-                    $join->on('eod_option_quotes.symbol', '=', 'latest_dates.symbol')->on('eod_option_quotes.date', '=', 'latest_dates.latest_date');
-                }
-            )->get()->toArray();
+        $latestIds = EarningsEstimate::selectRaw('MAX(id) as max_id')
+            ->whereIn('symbol', $symbols) // Добавляем фильтрацию по символам
+            ->groupBy('symbol');
 
-        $latestIds = EarningsEstimate::selectRaw('MAX(id) as max_id')->groupBy('symbol');
         $uniqueEarningsEstimates = EarningsEstimate::joinSub($latestIds, 'latest_ids', function ($join) {
             $join->on('earnings_estimate.id', '=', 'latest_ids.max_id');
-        })->orderBy('earnings_estimate.id', 'desc')->get()->toArray();
+        })
+            ->whereIn('earnings_estimate.symbol', $symbols) // Дополнительная фильтрация после соединения
+            ->orderBy('earnings_estimate.id', 'desc')
+            ->get()
+            ->toArray();
 
         // Prepare Table Data
         $table_data = EOD_OptionQuotes::prepareLowestVolumeTable($options_list);

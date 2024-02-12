@@ -52,8 +52,10 @@
                         if(percents != 'n/a') {
                             if(parseFloat(percents) > 0) {
                                 return '<span style="color: green;font-weight: bold;">'+percents+'%<span>';
-                            } else {
+                            } else if(parseFloat(percents) < 0) {
                                 return '<span style="color: red;font-weight: bold;">'+percents+'%<span>';
+                            } else {
+                                return '<span style="font-weight: bold;">'+percents+'%<span>';
                             }
                         } else {
                             return percents;

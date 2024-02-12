@@ -18,10 +18,11 @@
 
                             $index = 0;
                             foreach($table_data as $symbol => $symbol_data) :
-                            $market = $stocks_list[$symbol]['close'];
-                            $earnings = isset($earnings_estimates[$symbol]['est_earnings_date']) ? $earnings_estimates[$symbol]['est_earnings_date'] : 'None';
+                                $market = $stocks_list[$symbol]['close'];
+                                $earnings = isset($earnings_estimates[$symbol]['est_earnings_date']) ? $earnings_estimates[$symbol]['est_earnings_date'] : 'None';
+                                $change_percent = isset($symbol_data['close']) && $symbol_data['close'] > 0 ? round($symbol_data['change_percent'] / $symbol_data['close'], 2) : $symbol_data['change_percent'];
                             ?>
-                        {id:<?php echo $index; ?>, symbol:"<?php echo $symbol; ?>", market:"<?php echo $market; ?>", change:"<?php echo $symbol_data['change_percent']; ?>", volume:"<?php echo $symbol_data['volume']; ?>", type:"<?php echo ucfirst($symbol_data['putCall']); ?>", strike:"<?php echo $symbol_data['strikePrice']; ?>", price:"<?php echo $symbol_data['price']; ?>", expiry:"<?php echo $symbol_data['expiration']; ?>", earnings:"<?php echo $earnings; ?>"},
+                        {id:<?php echo $index; ?>, symbol:"<?php echo $symbol; ?>", market:"<?php echo $market; ?>", change:"<?php echo $symbol_data['change']; ?>", volume:"<?php echo $symbol_data['volume']; ?>", type:"<?php echo ucfirst($symbol_data['putCall']); ?>", strike:"<?php echo $symbol_data['strikePrice']; ?>", price:"<?php echo $symbol_data['price']; ?>", expiry:"<?php echo $symbol_data['expiration']; ?>", earnings:"<?php echo $earnings; ?>"},
                         <?php $index++; endforeach; ?>
                         <?php endif; ?>
                     ];
@@ -29,9 +30,11 @@
                     function color_by_percent_value(percents) {
                         if(percents != 'n/a') {
                             if(parseFloat(percents) > 0) {
-                                return '<span style="color: green;font-weight: bold;">'+percents+'%<span>';
+                                return '<span style="color: green;font-weight: bold;">'+percents+'<span>';
+                            } else if(parseFloat(percents) < 0) {
+                                return '<span style="color: red;font-weight: bold;">'+percents+'<span>';
                             } else {
-                                return '<span style="color: red;font-weight: bold;">'+percents+'%<span>';
+                                return '<span style="font-weight: bold;">'+percents+'<span>';
                             }
                         } else {
                             return percents;
