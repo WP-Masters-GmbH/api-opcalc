@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\ActualSymbols;
 
 class FinancialToolsController extends Controller
 {
@@ -11,8 +12,11 @@ class FinancialToolsController extends Controller
      */
     public function dollarCostAveragingCalculator()
     {
+        $symbols = ActualSymbols::pluck('symbol')->toArray();
+
         return view('pages.front.financial-tools.dollar-cost-averaging-calculator', [
-            'title' => 'Dollar Cost Averaging Calculator'
+            'title' => 'Dollar Cost Averaging Calculator',
+            'symbols' => $symbols
         ]);
     }
 

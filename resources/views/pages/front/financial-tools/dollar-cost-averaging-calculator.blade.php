@@ -7,26 +7,33 @@
                 <div class="sidebar-backtester">
                     <div class="red-symbol">Symbol</div>
                     <div class="symbol-container">
-                        <input type="text" id="symbol" placeholder="e.g. AAPL">
+                        <select class="select2" id="selected-symbol" data-placeholder="Search symbol">
+                            <option value="" disabled selected hidden>Search symbol</option>
+                            <option value="NONE">NONE</option>
+                            <?php foreach ($symbols as $symbol) : ?>
+                            <option value="<?php echo $symbol; ?>"><?php echo $symbol; ?></option>
+                            <?php endforeach; ?>
+                        </select>
                         <span class="help-element" title="Description"><i class="fa-regular fa-circle-question"></i></span>
                     </div>
+
                     <div class="description-under-input">Search for equities or indexes by symbol [or name]</div>
                     <div class="dates-flex">
                         <div class="date-item">
                             <label for="start-month">Start Month</label>
-                            <input type="text" class="month-backtester" id="start-month">
+                            <input type="text" data-toggle="datepicker-month" id="start-month">
                         </div>
                         <div class="date-item">
                             <label for="start-year">Start Year</label>
-                            <input type="text" class="year-backtester" id="start-year">
+                            <input type="text" data-toggle="datepicker-year" id="start-year">
                         </div>
                         <div class="date-item">
                             <label for="end-month">End Month</label>
-                            <input type="text" class="month-backtester" id="end-month">
+                            <input type="text" data-toggle="datepicker-month" id="end-month">
                         </div>
                         <div class="date-item">
                             <label for="end-year">End Year</label>
-                            <input type="text" class="year-backtester" id="end-year">
+                            <input type="text" data-toggle="datepicker-year" id="end-year">
                         </div>
                     </div>
                     <div class="entry-title">Entry</div>
@@ -46,34 +53,22 @@
                 </div>
                 <div class="results-backtester">
                     <div class="title-result">Results</div>
+                    <div class="backtester-loading" style="display: none;">
+                        <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                    </div>
                     <div class="backtester-list">
-                        <div class="backlist-item">
-                            <div class="backlist-head">
-                                <span class="round-circle" style="background: red"></span>
-                                <span class="symbol-name">AAPL</span>
-                            </div>
-                            <div class="backlist-body">
-                                <div class="block-backlist">
-                                    <div class="backlist-column-title">Return</div>
-                                    <div class="backlist-column-description">0$ <small>0%</small></div>
-                                </div>
-                                <div class="block-backlist">
-                                    <div class="backlist-column-title">Total Trades</div>
-                                    <div class="backlist-column-description">0</div>
-                                </div>
-                                <div class="block-backlist">
-                                    <div class="backlist-column-title">Percent Profitable</div>
-                                    <div class="backlist-column-description">0%</div>
-                                </div>
-                                <div class="block-backlist">
-                                    <div class="backlist-column-title">Max Drawdown</div>
-                                    <div class="backlist-column-description">0$ <small>0%</small></div>
-                                </div>
-                                <div class="block-backlist">
-                                    <div class="backlist-column-title">Biggest Gain</div>
-                                    <div class="backlist-column-description">0$ <small>0%</small></div>
-                                </div>
-                            </div>
+                        <div class="backtester-start-search"><span><i class="fa-solid fa-chart-simple"></i></span>
+                        <p>Run backtester to see analyse results</p></div>
+                    </div>
+                    <div class="backtester-charts" style="display: none">
+                        <canvas id="chartBacktester" style="height: 500px"></canvas>
+                    </div>
+                    <div class="backtester-table" style="display: none">
+                        <button class="button" id="download-table-xlsx">Download CSV</button>
+                        <div id="example-table"></div>
+                        <div class="table-logs">
+                            <button class="button" id="download-logs-table-csv">Download CSV</button>
+                            <div id="logs-table"></div>
                         </div>
                     </div>
                 </div>

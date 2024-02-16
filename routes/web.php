@@ -6,6 +6,7 @@ use App\Http\Controllers\PagesController;
 use App\Http\Controllers\MarketDataController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\FinancialToolsController;
+use App\Http\Controllers\ajaxController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,3 +55,5 @@ Route::get('/market-data/dividends/monthly-dividend-stocks', [MarketDataControll
 Route::get('/market-data/ratings/{symbol}', [MarketDataController::class, 'ratingAnalystsPrediction'])->name('rating-analysts-prediction');
 
 
+// Ajax Routes
+Route::post('/ajax/dca_calculation', [ajaxController::class, 'dcaCalculation']);
