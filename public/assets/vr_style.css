@@ -38,3 +38,169 @@
 .data-table-container {
     margin: 20px 0;
 }
+
+.backtester-list {
+    margin-top: 20px;
+}
+
+.backtester-list .backlist-item {
+    border-bottom: 1px solid #bdbdbd;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.backtester-list .backlist-item:nth-last-child(1) {
+    border: 0;
+}
+
+.backtester-list .backlist-item .backlist-head {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.backtester-list .backlist-item .backlist-head .round-circle {
+    width: 15px;
+    height: 15px;
+    display: block;
+    background: #14b8a6;
+    border-radius: 100%;
+    margin-right: 10px;
+}
+
+.backtester-list .backlist-item .backlist-head .symbol-name {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 18px;
+}
+
+.backtester-list .backlist-item .backlist-body {
+    display: flex;
+    justify-content: space-between;
+}
+
+.backtester-list .backlist-item .backlist-body > div {
+    width: 20%;
+}
+
+.backtester-list .backlist-item .backlist-body .backlist-column-title {
+    font-weight: bold;
+    margin-bottom: 2px;
+    font-size: 14px;
+}
+
+.backtester-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 40px;
+}
+
+.backtester-container .sidebar-backtester {
+    width: 30%;
+}
+.results-backtester {
+    width: 66%;
+}
+
+.backtester-container .red-symbol {
+    color: #942F2F;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.backtester-container .title-result {
+    font-weight: bold;
+    border-bottom: 1px solid #c9d2db;
+    padding-bottom: 15px;
+}
+
+.backtester-container .symbol-container {
+    display: flex;
+    margin: 15px 0 5px;
+}
+
+.backtester-container .sidebar-backtester input {
+    width: 100%;
+    border-bottom: 1px solid #c9d2dc;
+    padding: 5px 10px;
+}
+
+.backtester-container .sidebar-backtester .description-under-input {
+    color: #babbc3;
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.backtester-container .dates-flex {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    border-bottom: 1px solid #c9d2db;
+    margin-bottom: 15px;
+}
+
+.backtester-container .dates-flex > div {
+    width: 48%;
+    margin-bottom: 10px;
+}
+
+.backtester-container .dates-flex > div label {
+    display: block;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.backtester-container .dates-flex > div input {
+    border: 1px solid #c9d2dc;
+    background: #fafafa;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.backtester-container .entry-title {
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.backtester-container .box-inputs {
+    background: #fafafa;
+    border: 1px solid #ebebeb;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.backtester-container .box-inputs label {
+    display: block;
+    text-transform: uppercase;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.backtester-container .box-inputs .box-item {
+    margin-bottom: 10px;
+}
+
+.backtester-container .box-inputs input {
+    border: 1px solid #e8e8e8;
+    border-radius: 3px;
+}
+
+#run-dca-calculation {
+    display: block;
+    background: #d3d2d4;
+    width: 100%;
+    padding: 7px;
+    border-radius: 5px;
+    margin-top: 20px;
+    text-transform: uppercase;
+    color: #fff;
+    font-size: 13px
+}
