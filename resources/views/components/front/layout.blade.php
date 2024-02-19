@@ -12,9 +12,11 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="{{ url('/libs/tabulator/tabulator.min.css') }}">
+
     <link rel="stylesheet" href="{{ url('/assets/style.css?' . time()) }}">
     <link rel="stylesheet" href="{{ url('/assets/vr_style.css?' . time()) }}">
     <script src="{{ url('/libs/jquery.min.js') }}"></script>
+    @vite('resources/css/app.css')
 </head>
 <body>
     <x-front.header></x-front.header>

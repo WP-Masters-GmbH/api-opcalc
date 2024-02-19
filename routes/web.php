@@ -6,6 +6,8 @@ use App\Http\Controllers\PagesController;
 use App\Http\Controllers\MarketDataController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\FinancialToolsController;
+use App\Http\Controllers\Front\OptionChainsController;
+use App\Http\Controllers\Front\OptionChangeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +27,7 @@ Route::get('/', HomeController::class);
 Route::get('/blog', [BlogController::class, 'index'])->name('blog');
 Route::get('/market-data', [MarketDataController::class, 'index'])->name('market-data');
 Route::get('/option-pinning-strategy', [PagesController::class, 'optionPinningStrategy'])->name('option-pinning-strategy');
+Route::get('/option-chains', OptionChainsController::class)->name('optionsChain');
 
 // Free financial tools
 Route::get('/financial-tools/dollar-cost-averaging-calculator', [FinancialToolsController::class, 'dollarCostAveragingCalculator'])->name('dollar-cost-averaging-calculator');
@@ -52,5 +55,3 @@ Route::get('/market-data/dividends/monthly-dividend-stocks', [MarketDataControll
 
 // Ratings & Analysts predictions
 Route::get('/market-data/ratings/{symbol}', [MarketDataController::class, 'ratingAnalystsPrediction'])->name('rating-analysts-prediction');
-
-
