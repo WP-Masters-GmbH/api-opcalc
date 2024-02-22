@@ -27,7 +27,7 @@ Route::get('/', HomeController::class);
 Route::get('/blog', [BlogController::class, 'index'])->name('blog');
 Route::get('/market-data', [MarketDataController::class, 'index'])->name('market-data');
 Route::get('/option-pinning-strategy', [PagesController::class, 'optionPinningStrategy'])->name('option-pinning-strategy');
-Route::get('/option-chains', OptionChainsController::class)->name('optionsChain');
+Route::get('/option-chains/{slug}', OptionChainsController::class)->name('optionsChain');
 
 // Free financial tools
 Route::get('/financial-tools/dollar-cost-averaging-calculator', [FinancialToolsController::class, 'dollarCostAveragingCalculator'])->name('dollar-cost-averaging-calculator');

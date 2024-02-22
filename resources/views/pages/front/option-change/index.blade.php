@@ -1,9 +1,9 @@
 <x-front.layout title="{{ $title }}">
 <main class="mt-[68px]">
     <section class="section pt-24">
-        <h1 class="text-primary-dark text-semibold text-4xl lg:text-5xl">{ticker} Option chains(put and call)</h1>
+        <h1 class="text-primary-dark text-semibold text-4xl lg:text-5xl">{{ $slug }} Option chains(put and call)</h1>
         <p class="text-primary-dark text-xl mt-6">
-            {{ $randomFact }}
+            Fun fact: {{ $randomFact }}
         </p>
     </section>
     <section class="section pt-16">
