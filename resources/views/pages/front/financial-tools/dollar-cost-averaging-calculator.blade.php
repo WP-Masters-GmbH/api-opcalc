@@ -65,10 +65,10 @@
                     </div>
                     <div class="backtester-table" style="display: none">
                         <button class="button" id="download-table-xlsx">Download CSV</button>
-                        <div id="example-table"></div>
+                        <div id="dca-table"></div>
                         <div class="table-logs">
                             <button class="button" id="download-logs-table-csv">Download CSV</button>
-                            <div id="logs-table"></div>
+                            <div id="dca-logs-table"></div>
                         </div>
                     </div>
                 </div>

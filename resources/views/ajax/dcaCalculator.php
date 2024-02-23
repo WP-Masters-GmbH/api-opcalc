@@ -12,8 +12,7 @@ if (isset($dataBalance['datasets']) && ! empty($dataBalance['datasets'])) :
         <div class="backlist-item">
             <div class="backlist-head">
                 <span class="round-circle" style="background: <?php echo $symbol_data['borderColor']; ?>"></span>
-                <span
-                    class="symbol-name"><?php echo $symbol_data['label']; ?> <small><?php echo $is_equity ? "[{$start_date} - {$end_date}]" : ''; ?></small></span>
+                <span class="symbol-name"><?php echo $symbol_data['label']; ?> <small><?php echo $is_equity ? "[{$start_date} - {$end_date}]" : ''; ?></small></span>
             </div>
             <div class="backlist-body">
                 <div class="block-backlist">

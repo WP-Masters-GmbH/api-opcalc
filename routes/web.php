@@ -7,6 +7,7 @@ use App\Http\Controllers\MarketDataController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\FinancialToolsController;
 use App\Http\Controllers\ajaxController;
+use App\Http\Controllers\formController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,7 +44,7 @@ Route::get('/market-data/all-usa-stocks', [MarketDataController::class, 'allUsaS
 Route::get('/market-data/stocks/stocks-by-market-cap', [MarketDataController::class, 'stockByMarketCap'])->name('stocks-by-market-cap');
 Route::get('/market-data/stocks/highest-beta-stocks', [MarketDataController::class, 'highestBetaStocks'])->name('highest-beta-stocks');
 Route::get('/market-data/stocks/lowest-beta-stocks', [MarketDataController::class, 'lowestBetaStocks'])->name('lowest-beta-stocks');
-Route::get('/market-data/stocks/{symbol}/eod-stock-prices/{date}', [MarketDataController::class, 'eodStockPrices'])->name('eod-stock-prices');
+Route::get('/market-data/stocks/eod-stock-prices/{symbol}', [MarketDataController::class, 'eodStockPrices'])->name('eod-stock-prices');
 
 // Dividend Data
 Route::get('/market-data/dividends/{symbol}/dividend-history', [MarketDataController::class, 'dividendHistory'])->name('dividend-history');
@@ -54,6 +55,12 @@ Route::get('/market-data/dividends/monthly-dividend-stocks', [MarketDataControll
 // Ratings & Analysts predictions
 Route::get('/market-data/ratings/{symbol}', [MarketDataController::class, 'ratingAnalystsPrediction'])->name('rating-analysts-prediction');
 
+// Option Chain
+Route::get('/market-data/option-chains', [MarketDataController::class, 'optionChainSearch'])->name('option-chain-search');
+Route::get('/market-data/option-chains/{symbol}', [MarketDataController::class, 'optionChainSymbol'])->name('option-chain-symbol');
 
 // Ajax Routes
 Route::post('/ajax/dca_calculation', [ajaxController::class, 'dcaCalculation']);
+
+// Form Routes
+Route::post('/form/search_chain_symbol', [formController::class, 'searchChainSymbol'])->name('search-chain-symbol');;

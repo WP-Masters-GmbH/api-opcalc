@@ -1,4 +1,76 @@
 $(document).ready(function() {
+    //define data array
+    var tabledata = [];
+
+    //initialize table
+    var dca_table = new Tabulator("#dca-table", {
+        data:tabledata,           //load row data from array
+        layout:"fitColumns",      //fit columns to width of table
+        responsiveLayout:"hide",  //hide columns that don't fit on the table
+        addRowPos:"top",          //when adding a new row, add it to the top of the table
+        history:true,             //allow undo and redo actions on the table
+        pagination:"local",       //paginate the data
+        paginationSize:50,         //allow 7 rows per page of data
+        paginationCounter:"rows", //display count of paginated rows in footer
+        movableColumns:true,      //allow column order to be changed
+        resizableColumns: true,
+        initialSort:[             //set the initial sort order of the data
+            {column:"transaction", dir:"asc"},
+        ],
+        columnDefaults:{
+            tooltip:true,         //show tool tips on cells
+        },
+        columns:[                 //define the table columns
+            {title:"Transaction", field:"transaction", headerFilter:false},
+            {title:"Symbol", field:"symbol", headerFilter:true},
+            {title:"Price", field:"price", headerFilter:false},
+            {title:"Direction", field:"direction", headerFilter:false},
+            {title:"Quantity", field:"quantity", headerFilter:false},
+            {title:"Net Price", field:"net_price", headerFilter:false},
+        ],
+        rowClick: function (e, row) { // trigger an event when a row is clicked
+            // Toggle row selection
+            if(row.isSelected()){
+                row.deselect();
+            } else {
+                row.select();
+            }
+        },
+    });
+
+    //initialize table
+    var dca_logs_table = new Tabulator("#dca-logs-table", {
+        data:tabledata,           //load row data from array
+        layout:"fitColumns",      //fit columns to width of table
+        responsiveLayout:"hide",  //hide columns that don't fit on the table
+        addRowPos:"top",          //when adding a new row, add it to the top of the table
+        history:true,             //allow undo and redo actions on the table
+        pagination:"local",       //paginate the data
+        paginationSize:50,         //allow 7 rows per page of data
+        paginationCounter:"rows", //display count of paginated rows in footer
+        movableColumns:true,      //allow column order to be changed
+        resizableColumns: true,
+        columnDefaults:{
+            tooltip:true,         //show tool tips on cells
+        },
+        columns:[                 //define the table columns
+            {title:"Transaction", field:"transaction", headerFilter:false},
+            {title:"Symbol", field:"symbol", headerFilter:true},
+            {title:"Price", field:"price", headerFilter:false},
+            {title:"Direction", field:"direction", headerFilter:false},
+            {title:"Quantity", field:"quantity", headerFilter:false},
+            {title:"Net Price", field:"net_price", headerFilter:false},
+        ],
+        rowClick: function (e, row) { // trigger an event when a row is clicked
+            // Toggle row selection
+            if(row.isSelected()){
+                row.deselect();
+            } else {
+                row.select();
+            }
+        },
+    });
+
     // Для выбора только месяца
     $('[data-toggle="datepicker-month"]').datepicker({
         startView: 1,
@@ -22,11 +94,11 @@ $(document).ready(function() {
     });
 
     $('body').on('click', "#download-table-xlsx", function () {
-        table.download("csv", "backtester.csv");
+        dca_table.download("csv", "backtester.csv");
     });
 
     $('body').on('click', "#download-logs-table-csv", function () {
-        logs_table.download("csv", "backtester_logs.csv");
+        dca_logs_table.download("csv", "backtester_logs.csv");
     });
 
     function validate_run_backtester() {
@@ -98,7 +170,7 @@ $(document).ready(function() {
                         $('.backtester-charts').show();
                         $('.backtester-table').show();
                         initializeChartsStats(response.graph_items, response.graph_items);
-                        table.setData(response.table_items);
+                        dca_table.setData(response.table_items);
                         updateTableColumns(response.table_logs);
                         console.log('Count Rows: '+response.count_rows) ;
                     }
@@ -110,11 +182,12 @@ $(document).ready(function() {
         }
     });
 
+
     function updateTableColumns(newData) {
         var keys = getUniqueKeys(newData);
         var columns = createColumns(keys);
-        logs_table.setColumns(columns); // Обновление определений колонок
-        logs_table.setData(Object.values(newData)); // Обновление данных
+        dca_logs_table.setColumns(columns); // Обновление определений колонок
+        dca_logs_table.setData(Object.values(newData)); // Обновление данных
     }
 
     function getUniqueKeys(data) {
@@ -147,6 +220,7 @@ $(document).ready(function() {
         newItem.labels = dataBalance.labels;
 
         var secondctx = document.getElementById('chartBacktester').getContext('2d');
+        console.log(secondctx);
         secondChart = new Chart(secondctx, {
             type: 'line',
             data: newItem,
@@ -158,7 +232,7 @@ $(document).ready(function() {
                         display: true,
                         title: {
                             display: true,
-                        },
+                        }/*,
                         ticks: {
                             callback: function (value, index, values) {
                                 if (typeof value === 'string') {
@@ -166,7 +240,7 @@ $(document).ready(function() {
                                 }
                                 return value;
                             },
-                        },
+                        },*/
                     },
                     y: {
                         display: true,

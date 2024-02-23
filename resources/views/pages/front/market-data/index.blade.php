@@ -20,8 +20,9 @@
                     <li><a href="{{ route('lowest-iv-options') }}">Lowest IV Option contracts</a></li>
                     <li><a href="{{ route('lowest-volume-options') }}">Lowest Volume Option contracts</a></li>
                     <li><a href="{{ route('option-pinning-strategy') }}">Option Pin Theory</a> - Revealing Strategic Strike Prices for Traders</li>
-                    <li><a href="{{ route('eod-option-chains', ['AAPL', date('Y-m-d')]) }}">EOD option prices</a> - View all open, high, low, and closing prices for all option contracts</li>
+                    <li><a href="{{ route('eod-option-chains', ['TSLA', date('Y-m-d')]) }}">EOD option prices</a> - View all open, high, low, and closing prices for all option contracts</li>
                     <li><a href="{{ route('all-usa-stocks') }}">List of all stocks with tradable options</a></li>
+                    <li><a href="{{ route('option-chain-search') }}">Option Chains</a></li>
                 </ul>
             </div>
 
@@ -31,14 +32,14 @@
                     <li><a href="{{ route('stocks-by-market-cap') }}">Stocks listed by MarketCap</a></li>
                     <li><a href="{{ route('highest-beta-stocks') }}">Highest Beta Stocks</a> - View stocks with the highest beta score</li>
                     <li><a href="{{ route('lowest-beta-stocks') }}">Lowest Beta stocks</a> - View stocks with the lowest beta score</li>
-                    <li><a href="{{ route('eod-stock-prices', ['AAPL', date('Y-m-d')]) }}">EOD stock data</a> - View all open, high, low, and closing prices for all option contracts</li>
+                    <li><a href="{{ route('eod-stock-prices', ['TSLA']) }}">EOD stock data</a> - View all open, high, low, and closing prices for all option contracts</li>
                 </ul>
             </div>
 
             <div class="list-links">
                 <h2>Dividend Data</h2>
                 <ul>
-                    <li><a href="{{ route('dividend-history', ['AAPL']) }}">Dividend History</a></li>
+                    <li><a href="{{ route('dividend-history', ['TSLA']) }}">Dividend History</a></li>
                     <li><a href="{{ route('highest-dividend-yield-stocks') }}">Stocks with highest dividend yield</a></li>
                     <li><a href="{{ route('upcoming-ex-dividend-dates') }}">Upcoming ex-dividend dates</a></li>
                     <li><a href="{{ route('monthly-dividend-stocks') }}">Stocks with monthly dividends</a></li>
@@ -49,7 +50,7 @@
             <div class="list-links">
                 <h2>Ratings & Analysts predictions</h2>
                 <ul>
-                    <li><a href="{{ route('rating-analysts-prediction', ['AAPL']) }}">Stock Analysts Estimates, Ratings and Price Targets</a></li>
+                    <li><a href="{{ route('rating-analysts-prediction', ['TSLA']) }}">Stock Analysts Estimates, Ratings and Price Targets</a></li>
                 </ul>
             </div>
         </section>

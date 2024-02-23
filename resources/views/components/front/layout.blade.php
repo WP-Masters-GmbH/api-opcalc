@@ -21,6 +21,8 @@
 <body>
     <x-front.header></x-front.header>
     {{ $slot }}
+
+    <script src="{{ url('/libs/charts/chart.min.js') }}"></script>
     <script src="{{ url('/libs/jquery-ui/jquery-ui.js') }}"></script>
     <script src="{{ url('/libs/font-awesome/all.min.js') }}"></script>
     <script src="{{ url('/libs/year-picker/datepicker.min.js') }}" type="text/javascript"></script>

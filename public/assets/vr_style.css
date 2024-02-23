@@ -252,8 +252,16 @@
 
 .backtester-table .button {
     font-size: 15px;
-    padding: 5px 10px;
+    padding: 5px 15px;
     margin-bottom: 10px;
+    background: #000;
+    color: #fff;
+    border-radius: 5px;
+    transition: 0.2s;
+}
+
+.backtester-table .button:hover {
+    background: #404040;
 }
 
 .table-logs {
@@ -356,4 +364,31 @@
 
 .required-backtester {
     border: 1px solid red !important;
+}
+
+.form-search-symbol {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.form-search-symbol .flexed-input-search {
+    display: flex;
+}
+
+.form-search-symbol .flexed-input-search input {
+    background: #ddd;
+    width: 100%;
+    padding: 10px 15px;
+    margin-right: 10px;
+    border-radius: 5px;
+}
+
+.form-search-symbol .flexed-input-search button {
+    font-size: 25px;
+    padding: 0 10px;
+}
+
+.form-search-symbol .flexed-input-search button:hover {
+    color: #db6536;
 }

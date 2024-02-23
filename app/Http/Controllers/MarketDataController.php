@@ -10,6 +10,8 @@ use App\Models\EOD_StockQuotes;
 use App\Models\DividendHistory;
 use App\Models\EarningsEstimate;
 use Illuminate\Support\Facades\DB;
+use App\Models\ActualSymbols;
+use Illuminate\Support\Facades\Redis;
 
 class MarketDataController extends Controller
 {
@@ -384,8 +386,13 @@ class MarketDataController extends Controller
      */
     public function stockByMarketCap()
     {
+        $symbols = ActualSymbols::pluck('symbol')->toArray();
+        $eod_stocks = EOD_StockQuotes::whereIn('symbol', $symbols)->get()->toArray();
+        $table_data = EOD_StockQuotes::prepareMarketData($eod_stocks);
+
         return view('pages.front.market-data.stocks-by-market-cap', [
-            'title' => 'Stocks listed by MarketCap'
+            'title' => 'Stocks listed by MarketCap',
+            'table_data' => $table_data
         ]);
     }
 
@@ -472,12 +479,14 @@ class MarketDataController extends Controller
     /**
      * EOD stock data Page
      */
-    public function eodStockPrices($symbol, $date)
+    public function eodStockPrices($symbol)
     {
+        $table_data = EOD_StockQuotes::where('symbol', $symbol)->get()->toArray();
+
         return view('pages.front.market-data.eod-stock-prices', [
             'title' => 'EOD stock data',
             'symbol' => $symbol,
-            'date' => $date
+            'table_data' => $table_data
         ]);
     }
 
@@ -535,6 +544,31 @@ class MarketDataController extends Controller
         return view('pages.front.market-data.rating-analysts-prediction', [
             'title' => 'Stock Analysts Estimates, Ratings and Price Targets',
             'symbol' => $symbol
+        ]);
+    }
+
+    /**
+     * Search Chain Page
+     */
+    public function optionChainSearch()
+    {
+        return view('pages.front.market-data.option-chain-search', [
+            'title' => 'Chain Search'
+        ]);
+    }
+
+    /**
+     * Search Chain Symbol Page
+     */
+    public function optionChainSymbol($symbol)
+    {
+        // Получение значения по ключу
+        $symbol_data = Redis::get('current_option_'.$symbol);
+
+        return view('pages.front.market-data.option-chain-symbol', [
+            'title' => "Chains Symbol {$symbol}",
+            'symbol' => $symbol,
+            'table_data' => json_decode($symbol_data, true)
         ]);
     }
 }
