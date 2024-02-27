@@ -42,6 +42,16 @@
                         return color_by_percent_value(percents);
                     }
 
+                    // Custom sorter for dates
+                    var dateSorter = function(a, b, aRow, bRow, column, dir, sorterParams){
+                        // This assumes your date is in the format "MMM d, YYYY", e.g. "Jun 14, 2012"
+                        var format = "MMM D, YYYY"; // specify the format of your date strings
+                        var aDate = moment(a, format),
+                            bDate = moment(b, format);
+
+                        return aDate - bDate; // this will sort by date value
+                    };
+
                     //initialize table
                     var table = new Tabulator("#table-data", {
                         data:tabledata,           //load row data from array
@@ -63,9 +73,9 @@
                             {title:"Ex-Date", field:"date", headerFilter:false},
                             {title:"Amount", field:"amount", headerFilter:false},
                             {title:"YoY increase", field:"yoy", formatter:change_color, headerFilter:false},
-                            {title:"Declared", field:"declared", headerFilter:false},
-                            {title:"Record", field:"record", headerFilter:false},
-                            {title:"Payable", field:"payable", headerFilter:false},
+                            {title:"Declared", field:"declared", sorter:dateSorter, headerFilter:false},
+                            {title:"Record", field:"record", sorter:dateSorter, headerFilter:false},
+                            {title:"Payable", field:"payable", sorter:dateSorter, headerFilter:false},
                         ],
                     });
                 });

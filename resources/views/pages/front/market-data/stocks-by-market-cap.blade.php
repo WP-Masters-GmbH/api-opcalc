@@ -35,6 +35,24 @@
                         }
                     }
 
+                    function customSorter(a, b, aRow, bRow, column, dir, sorterParams){
+                        // функция для конвертации значения с T и B в числа
+                        function convertValue(value) {
+                            let number = parseFloat(value);
+                            if (value.includes('T')) {
+                                return number * 1e12; // конвертация триллионов в числа
+                            } else if (value.includes('B')) {
+                                return number * 1e9; // конвертация биллионов в числа
+                            }
+                            return number; // если нет суффикса, возвращаем как есть
+                        }
+
+                        let valA = convertValue(a);
+                        let valB = convertValue(b);
+
+                        return valA - valB;
+                    }
+
                     var change_color = function(cell, formatterParams){
                         var percents = cell.getRow().getData().change_percent;
                         return color_by_percent_value(percents);
@@ -63,7 +81,7 @@
                             {title:"Change Percent", field:"change_percent", formatter:change_color, headerFilter:false},
                             {title:"52 Week Low", field:"52wl", headerFilter:false},
                             {title:"52 Week High", field:"52wh", headerFilter:false},
-                            {title:"Market Cap", field:"market_cap", headerFilter:false}
+                            {title:"Market Cap", field:"market_cap", headerFilter:false, sorter:customSorter}
                         ],
                     });
                 });

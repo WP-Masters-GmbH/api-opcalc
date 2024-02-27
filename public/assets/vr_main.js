@@ -3,73 +3,77 @@ $(document).ready(function() {
     var tabledata = [];
 
     //initialize table
-    var dca_table = new Tabulator("#dca-table", {
-        data:tabledata,           //load row data from array
-        layout:"fitColumns",      //fit columns to width of table
-        responsiveLayout:"hide",  //hide columns that don't fit on the table
-        addRowPos:"top",          //when adding a new row, add it to the top of the table
-        history:true,             //allow undo and redo actions on the table
-        pagination:"local",       //paginate the data
-        paginationSize:50,         //allow 7 rows per page of data
-        paginationCounter:"rows", //display count of paginated rows in footer
-        movableColumns:true,      //allow column order to be changed
-        resizableColumns: true,
-        initialSort:[             //set the initial sort order of the data
-            {column:"transaction", dir:"asc"},
-        ],
-        columnDefaults:{
-            tooltip:true,         //show tool tips on cells
-        },
-        columns:[                 //define the table columns
-            {title:"Transaction", field:"transaction", headerFilter:false},
-            {title:"Symbol", field:"symbol", headerFilter:true},
-            {title:"Price", field:"price", headerFilter:false},
-            {title:"Direction", field:"direction", headerFilter:false},
-            {title:"Quantity", field:"quantity", headerFilter:false},
-            {title:"Net Price", field:"net_price", headerFilter:false},
-        ],
-        rowClick: function (e, row) { // trigger an event when a row is clicked
-            // Toggle row selection
-            if(row.isSelected()){
-                row.deselect();
-            } else {
-                row.select();
-            }
-        },
-    });
+    if($('#dca-table').length) {
+        var dca_table = new Tabulator("#dca-table", {
+            data: tabledata,           //load row data from array
+            layout: "fitColumns",      //fit columns to width of table
+            responsiveLayout: "hide",  //hide columns that don't fit on the table
+            addRowPos: "top",          //when adding a new row, add it to the top of the table
+            history: true,             //allow undo and redo actions on the table
+            pagination: "local",       //paginate the data
+            paginationSize: 50,         //allow 7 rows per page of data
+            paginationCounter: "rows", //display count of paginated rows in footer
+            movableColumns: true,      //allow column order to be changed
+            resizableColumns: true,
+            initialSort: [             //set the initial sort order of the data
+                {column: "transaction", dir: "asc"},
+            ],
+            columnDefaults: {
+                tooltip: true,         //show tool tips on cells
+            },
+            columns: [                 //define the table columns
+                {title: "Transaction", field: "transaction", headerFilter: false},
+                {title: "Symbol", field: "symbol", headerFilter: true},
+                {title: "Price", field: "price", headerFilter: false},
+                {title: "Direction", field: "direction", headerFilter: false},
+                {title: "Quantity", field: "quantity", headerFilter: false},
+                {title: "Net Price", field: "net_price", headerFilter: false},
+            ],
+            rowClick: function (e, row) { // trigger an event when a row is clicked
+                // Toggle row selection
+                if (row.isSelected()) {
+                    row.deselect();
+                } else {
+                    row.select();
+                }
+            },
+        });
+    }
 
     //initialize table
-    var dca_logs_table = new Tabulator("#dca-logs-table", {
-        data:tabledata,           //load row data from array
-        layout:"fitColumns",      //fit columns to width of table
-        responsiveLayout:"hide",  //hide columns that don't fit on the table
-        addRowPos:"top",          //when adding a new row, add it to the top of the table
-        history:true,             //allow undo and redo actions on the table
-        pagination:"local",       //paginate the data
-        paginationSize:50,         //allow 7 rows per page of data
-        paginationCounter:"rows", //display count of paginated rows in footer
-        movableColumns:true,      //allow column order to be changed
-        resizableColumns: true,
-        columnDefaults:{
-            tooltip:true,         //show tool tips on cells
-        },
-        columns:[                 //define the table columns
-            {title:"Transaction", field:"transaction", headerFilter:false},
-            {title:"Symbol", field:"symbol", headerFilter:true},
-            {title:"Price", field:"price", headerFilter:false},
-            {title:"Direction", field:"direction", headerFilter:false},
-            {title:"Quantity", field:"quantity", headerFilter:false},
-            {title:"Net Price", field:"net_price", headerFilter:false},
-        ],
-        rowClick: function (e, row) { // trigger an event when a row is clicked
-            // Toggle row selection
-            if(row.isSelected()){
-                row.deselect();
-            } else {
-                row.select();
-            }
-        },
-    });
+    if($('#dca-logs-table').length) {
+        var dca_logs_table = new Tabulator("#dca-logs-table", {
+            data:tabledata,           //load row data from array
+            layout:"fitColumns",      //fit columns to width of table
+            responsiveLayout:"hide",  //hide columns that don't fit on the table
+            addRowPos:"top",          //when adding a new row, add it to the top of the table
+            history:true,             //allow undo and redo actions on the table
+            pagination:"local",       //paginate the data
+            paginationSize:50,         //allow 7 rows per page of data
+            paginationCounter:"rows", //display count of paginated rows in footer
+            movableColumns:true,      //allow column order to be changed
+            resizableColumns: true,
+            columnDefaults:{
+                tooltip:true,         //show tool tips on cells
+            },
+            columns:[                 //define the table columns
+                {title:"Transaction", field:"transaction", headerFilter:false},
+                {title:"Symbol", field:"symbol", headerFilter:true},
+                {title:"Price", field:"price", headerFilter:false},
+                {title:"Direction", field:"direction", headerFilter:false},
+                {title:"Quantity", field:"quantity", headerFilter:false},
+                {title:"Net Price", field:"net_price", headerFilter:false},
+            ],
+            rowClick: function (e, row) { // trigger an event when a row is clicked
+                // Toggle row selection
+                if(row.isSelected()){
+                    row.deselect();
+                } else {
+                    row.select();
+                }
+            },
+        });
+    }
 
     // Для выбора только месяца
     $('[data-toggle="datepicker-month"]').datepicker({

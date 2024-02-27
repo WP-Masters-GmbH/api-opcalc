@@ -47,6 +47,24 @@
                         return color_by_percent_value(percents);
                     }
 
+                    function customSorter(a, b, aRow, bRow, column, dir, sorterParams){
+                        // функция для конвертации значения с T и B в числа
+                        function convertValue(value) {
+                            let number = parseFloat(value);
+                            if (value.includes('T')) {
+                                return number * 1e12; // конвертация триллионов в числа
+                            } else if (value.includes('B')) {
+                                return number * 1e9; // конвертация биллионов в числа
+                            }
+                            return number; // если нет суффикса, возвращаем как есть
+                        }
+
+                        let valA = convertValue(a);
+                        let valB = convertValue(b);
+
+                        return valA - valB;
+                    }
+
                     //initialize table
                     var table = new Tabulator("#table-data", {
                         data:tabledata,           //load row data from array
@@ -67,7 +85,7 @@
                         columns:[                 //define the table columns
                             {title:"Symbol", field:"symbol", headerFilter:false},
                             {title:"Market", field:"market", headerFilter:false},
-                            {title:"IV", field:"iv", headerFilter:false},
+                            {title:"IV", field:"iv", headerFilter:false, sorter:customSorter},
                             {title:"Change", field:"change", formatter:change_color, headerFilter:false},
                             {title:"Type", field:"type", headerFilter:false},
                             {title:"Strike", field:"strike", headerFilter:false},
