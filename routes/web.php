@@ -57,10 +57,14 @@ Route::get('/market-data/ratings/{symbol}', [MarketDataController::class, 'ratin
 
 // Option Chain
 Route::get('/market-data/option-chains', [MarketDataController::class, 'optionChainSearch'])->name('option-chain-search');
-Route::get('/market-data/option-chains/{symbol}', [MarketDataController::class, 'optionChainSymbol'])->name('option-chain-symbol');
+Route::get(
+    '/market-data/option-chains/{symbol}/{date?}',
+    [MarketDataController::class, 'optionChainSymbol']
+)->name('option-chain-symbol');
 
 // Ajax Routes
 Route::post('/ajax/dca_calculation', [ajaxController::class, 'dcaCalculation']);
 
 // Form Routes
-Route::post('/form/search_chain_symbol', [formController::class, 'searchChainSymbol'])->name('search-chain-symbol');;
+Route::post('/form/search_chain_symbol', [formController::class, 'searchChainSymbol'])->name('search-chain-symbol');
+;

@@ -11,10 +11,12 @@ use App\Models\DividendHistory;
 use App\Models\EarningsEstimate;
 use Illuminate\Support\Facades\DB;
 use App\Models\ActualSymbols;
-use Illuminate\Support\Facades\Redis;
+use App\Services\Controllers\OptionChainService;
 
 class MarketDataController extends Controller
 {
+    private array $stocks = ['MSFT', 'AAPL', 'GOOGL', 'AMZN', 'NVDA', 'META', 'BRK.B', 'LLY', 'TSLA', 'AVGO', 'V', 'TSM', 'JPM', 'NVO', 'UNH', 'WMT', 'MA', 'XOM', 'JNJ', 'PG', 'HD', 'ASML', 'MRK', 'ORCL', 'COST', 'ABBV', 'AMD', 'ADBE', 'CVX', 'CRM', 'TM', 'BAC', 'KO', 'NFLX', 'PEP', 'ACN', 'MCD', 'TMO', 'SAP', 'NVS', 'SHEL', 'CSCO', 'AZN', 'LIN', 'ABT', 'TMUS', 'BABA', 'DHR', 'CMCSA', 'INTC', 'INTU', 'WFC', 'DIS', 'VZ', 'AMGN', 'IBM', 'PDD', 'CAT', 'NOW', 'QCOM', 'BHP', 'TTE', 'NKE', 'PFE', 'HSBC', 'UNP', 'AXP', 'BX', 'GE', 'TXN', 'PM', 'SPGI', 'MS', 'UBER', 'AMAT', 'RY', 'ISRG', 'RTX', 'COP', 'SYK', 'HON', 'HDB', 'T', 'BA', 'GS', 'LOW', 'BKNG', 'BUD', 'UL', 'SONY', 'UPS', 'RIO', 'PLD', 'NEE', 'SNY', 'BLK', 'MDT', 'ELV', 'SCHW'];
+
     /**
      * Main Market Data Page
      */
@@ -402,14 +404,14 @@ class MarketDataController extends Controller
     public function highestBetaStocks()
     {
         // Prepare Variables
-        $stocks = ['MSFT', 'AAPL', 'GOOGL', 'AMZN', 'NVDA', 'META', 'BRK.B', 'LLY', 'TSLA', 'AVGO', 'V', 'TSM', 'JPM', 'NVO', 'UNH', 'WMT', 'MA', 'XOM', 'JNJ', 'PG', 'HD', 'ASML', 'MRK', 'ORCL', 'COST', 'ABBV', 'AMD', 'ADBE', 'CVX', 'CRM', 'TM', 'BAC', 'KO', 'NFLX', 'PEP', 'ACN', 'MCD', 'TMO', 'SAP', 'NVS', 'SHEL', 'CSCO', 'AZN', 'LIN', 'ABT', 'TMUS', 'BABA', 'DHR', 'CMCSA', 'INTC', 'INTU', 'WFC', 'DIS', 'VZ', 'AMGN', 'IBM', 'PDD', 'CAT', 'NOW', 'QCOM', 'BHP', 'TTE', 'NKE', 'PFE', 'HSBC', 'UNP', 'AXP', 'BX', 'GE', 'TXN', 'PM', 'SPGI', 'MS', 'UBER', 'AMAT', 'RY', 'ISRG', 'RTX', 'COP', 'SYK', 'HON', 'HDB', 'T', 'BA', 'GS', 'LOW', 'BKNG', 'BUD', 'UL', 'SONY', 'UPS', 'RIO', 'PLD', 'NEE', 'SNY', 'BLK', 'MDT', 'ELV', 'SCHW'];
+        $stocks = $this->stocks;
         $month = date('F');
         $year = date('Y');
         $table_data = [];
 
         // Get Data
         $stocks_list = StockPrice::whereIn('symbol', $stocks)
-            ->whereIn('quotedate', function($query) use ($stocks) {
+            ->whereIn('quotedate', function ($query) use ($stocks) {
                 $query->selectRaw('quotedate')
                     ->from('stock_quotes')
                     ->whereIn('symbol', $stocks)
@@ -442,14 +444,14 @@ class MarketDataController extends Controller
     public function lowestBetaStocks()
     {
         // Prepare Variables
-        $stocks = ['MSFT', 'AAPL', 'GOOGL', 'AMZN', 'NVDA', 'META', 'BRK.B', 'LLY', 'TSLA', 'AVGO', 'V', 'TSM', 'JPM', 'NVO', 'UNH', 'WMT', 'MA', 'XOM', 'JNJ', 'PG', 'HD', 'ASML', 'MRK', 'ORCL', 'COST', 'ABBV', 'AMD', 'ADBE', 'CVX', 'CRM', 'TM', 'BAC', 'KO', 'NFLX', 'PEP', 'ACN', 'MCD', 'TMO', 'SAP', 'NVS', 'SHEL', 'CSCO', 'AZN', 'LIN', 'ABT', 'TMUS', 'BABA', 'DHR', 'CMCSA', 'INTC', 'INTU', 'WFC', 'DIS', 'VZ', 'AMGN', 'IBM', 'PDD', 'CAT', 'NOW', 'QCOM', 'BHP', 'TTE', 'NKE', 'PFE', 'HSBC', 'UNP', 'AXP', 'BX', 'GE', 'TXN', 'PM', 'SPGI', 'MS', 'UBER', 'AMAT', 'RY', 'ISRG', 'RTX', 'COP', 'SYK', 'HON', 'HDB', 'T', 'BA', 'GS', 'LOW', 'BKNG', 'BUD', 'UL', 'SONY', 'UPS', 'RIO', 'PLD', 'NEE', 'SNY', 'BLK', 'MDT', 'ELV', 'SCHW'];
+        $stocks = $this->stocks;
         $month = date('F');
         $year = date('Y');
         $table_data = [];
 
         // Get Data
         $stocks_list = StockPrice::whereIn('symbol', $stocks)
-            ->whereIn('quotedate', function($query) use ($stocks) {
+            ->whereIn('quotedate', function ($query) use ($stocks) {
                 $query->selectRaw('quotedate')
                     ->from('stock_quotes')
                     ->whereIn('symbol', $stocks)
@@ -560,15 +562,33 @@ class MarketDataController extends Controller
     /**
      * Search Chain Symbol Page
      */
-    public function optionChainSymbol($symbol)
+    public function optionChainSymbol(Request $request, OptionChainService $service)
     {
-        // Получение значения по ключу
-        $symbol_data = Redis::get('current_option_'.$symbol);
+        $symbol = $request->route('symbol');
+        $date = $request->route('date');
+        [$dates, $calls, $puts, $strikes, $startDate] = $service->getData($symbol, $date);
+        $fact = $service->getRandomFact();
 
-        return view('pages.front.market-data.option-chain-symbol', [
-            'title' => "Chains Symbol {$symbol}",
-            'symbol' => $symbol,
-            'table_data' => json_decode($symbol_data, true)
-        ]);
+        $usFormatedStartDate = $service->getFormatedStartDate($startDate);
+
+        $title = "Chains Symbol {$symbol}";
+
+        $symbols = $this->stocks;
+
+        return view(
+            'pages.front.market-data.option-chain-symbol',
+            compact(
+                'symbol',
+                'symbols',
+                'fact',
+                'title',
+                'dates',
+                'calls',
+                'puts',
+                'strikes',
+                'startDate',
+                'usFormatedStartDate'
+            )
+        );
     }
 }

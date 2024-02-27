@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="{{ url('/assets/style.css?' . time()) }}">
     <link rel="stylesheet" href="{{ url('/assets/vr_style.css?' . time()) }}">
     <script src="{{ url('/libs/jquery.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url('/build/assets/app.css?'. time()) }}">
 </head>
 <body>
     <x-front.header></x-front.header>
@@ -31,6 +32,10 @@
     <script src="{{ url('/libs/select2/select2.min.js') }}"></script>
     <script src="{{ url('/assets/main.js?' . time()) }}"></script>
     <script src="{{ url('/assets/vr_main.js?' . time()) }}"></script>
+    @empty($script)
+        @else
+        <script src="{{ url("/assets/pages/{$script}.js?" . time()) }}"></script>
+    @endempty
     <x-front.footer></x-front.footer>
 </body>
 </html>
