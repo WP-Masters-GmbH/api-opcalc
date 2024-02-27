@@ -33,5 +33,9 @@
     <script src="{{ url('/assets/main.js?' . time()) }}"></script>
     <script src="{{ url('/assets/vr_main.js?' . time()) }}"></script>
     <x-front.footer></x-front.footer>
+
+    @if(!empty($script))
+        <script src="{{ url("/assets/pages/$script.js?" . time()) }}"></script>
+    @endif;
 </body>
 </html>

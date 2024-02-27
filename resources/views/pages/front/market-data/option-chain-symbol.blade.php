@@ -67,7 +67,7 @@
                     <div class="flex gap-1 flex-col">
                         <p class="text-primary-dark font-semibold">Option Type(s)</p>
                         <select name="option-types" id="option-types" class="border border-primary-dark bg-white px-2 py-1 inline-block h-[34px]">
-                            <option value="all">Calls&puts</option>
+                            <option value="all">Calls & Puts</option>
                             <option value="calls">Calls only</option>
                             <option value="puts">Puts only</option>
                         </select>
@@ -94,8 +94,8 @@
                                         <td class="text-center">---</td>
                                         <td class="text-center">---</td>
                                         <td class="text-center">---</td>
-                                        <td class="text-center">{{ $callRow->volume ? "$" . number_format($callRow->volume, 0, ".", ",") : '---' }}</td>
-                                        <td class="text-center">{{ $callRow->openInt ? "$" . number_format($callRow->openInt, 0, ".", ",") : '---' }}</td>
+                                        <td class="text-center">{{ $callRow->volume ?  number_format($callRow->volume, 0, ".", ",") : '---' }}</td>
+                                        <td class="text-center">{{ $callRow->openInt ?  number_format($callRow->openInt, 0, ".", ",") : '---' }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -138,8 +138,8 @@
                                         <td class="text-center">---</td>
                                         <td class="text-center">---</td>
                                         <td class="text-center">---</td>
-                                        <td class="text-center">{{ $callRow->volume ? "$" . number_format($callRow->volume, 0, ".", ",") : '---' }}</td>
-                                        <td class="text-center">{{ $callRow->openInt ? "$" . number_format($callRow->openInt, 0, ".", ",") : '---' }}</td>
+                                        <td class="text-center">{{ $callRow->volume ?  number_format($callRow->volume, 0, ".", ",") : '---' }}</td>
+                                        <td class="text-center">{{ $callRow->openInt ?  number_format($callRow->openInt, 0, ".", ",") : '---' }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
