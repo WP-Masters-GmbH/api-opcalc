@@ -10,7 +10,10 @@
             <div class="bg-white rounded-sm pt-[9px] px-9 pb-44 mb-4">
                 <div>
                     <p class="text-primary-dark font-semibold">Underlying stock:</p>
-                    <p class="text-green-primary font-semibold">$180.37 +1.70 (0.90%)</p>
+                    <p class="@if((float)$currentStockInfo->change > 0) text-green-primary @endif font-semibold" @if((float)$currentStockInfo->change < 0) style="color:red !important" @endif >${{ $currentStockInfo->price }} <span
+                    @if((float)$currentStockInfo->change < 0)
+                        style="color:red !important"
+                    @endif >{{ $currentStockInfo->change }} ({{ $currentStockInfo->percent }})<span></p>
                 </div>
                 <p class="pt-5 text-red-secondary font-semibold">Select option</p>
                 <div class="flex gap-6 pt-5 flex-col lg:flex-row">

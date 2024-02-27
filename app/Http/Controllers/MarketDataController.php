@@ -12,6 +12,7 @@ use App\Models\EarningsEstimate;
 use Illuminate\Support\Facades\DB;
 use App\Models\ActualSymbols;
 use App\Services\Controllers\OptionChainService;
+use App\Models\DividendStocks;
 
 class MarketDataController extends Controller
 {
@@ -513,8 +514,17 @@ class MarketDataController extends Controller
      */
     public function highestDividendYieldStocks()
     {
+        $symbols = ActualSymbols::pluck('symbol')->toArray();
+        $eod_stocks = EOD_StockQuotes::whereIn('symbol', $symbols)->get()->toArray();
+        $table_data = EOD_StockQuotes::prepareMarketData($eod_stocks);
+
+        $dividends = DividendStocks::whereIn('symbol', $symbols)->get()->toArray();
+        $dividendsData = DividendStocks::prepareDevidents($dividends);
+
         return view('pages.front.market-data.highest-dividend-yield-stocks', [
-            'title' => 'Stocks with highest dividend yield'
+            'title' => 'Stocks with highest dividend yield',
+            'table_data' => $table_data,
+            'dividendsData' => $dividendsData
         ]);
     }
 
@@ -566,7 +576,7 @@ class MarketDataController extends Controller
     {
         $symbol = $request->route('symbol');
         $date = $request->route('date');
-        [$dates, $calls, $puts, $strikes, $startDate] = $service->getData($symbol, $date);
+        [$dates, $calls, $puts, $strikes, $startDate, $currentStockInfo] = $service->getData($symbol, $date);
         $fact = $service->getRandomFact();
 
         $usFormatedStartDate = $service->getFormatedStartDate($startDate);
@@ -587,7 +597,8 @@ class MarketDataController extends Controller
                 'puts',
                 'strikes',
                 'startDate',
-                'usFormatedStartDate'
+                'usFormatedStartDate',
+                'currentStockInfo'
             )
         );
     }
