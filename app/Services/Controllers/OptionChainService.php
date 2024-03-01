@@ -22,7 +22,11 @@ class OptionChainService
      */
     public function getData(string $symbol, ?string $date): ?array
     {
-        $symbolData = Redis::get('current_option_' . $symbol);
+        $symbolData = Redis::get("current_option_$symbol");
+
+        $currentStockInfoRaw = Redis::get("current_stocks_info_$symbol");
+
+        $currentStockInfo = json_decode($currentStockInfoRaw);
 
         if (empty($symbolData)) {
             return null;
@@ -50,7 +54,7 @@ class OptionChainService
             }
         })->unique()->values();
 
-        return [$dates, $calls, $puts, $strikes, $startDate];
+        return [$dates, $calls, $puts, $strikes, $startDate, $currentStockInfo];
     }
 
     /**

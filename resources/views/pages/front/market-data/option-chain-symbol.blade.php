@@ -10,7 +10,10 @@
             <div class="bg-white rounded-sm pt-[9px] px-9 pb-44 mb-4">
                 <div>
                     <p class="text-primary-dark font-semibold">Underlying stock:</p>
-                    <p class="text-green-primary font-semibold">$180.37 +1.70 (0.90%)</p>
+                    <p class="@if((float)$currentStockInfo->change > 0) text-green-primary @endif font-semibold" @if((float)$currentStockInfo->change < 0) style="color:red !important" @endif >${{ $currentStockInfo->price }} <span
+                    @if((float)$currentStockInfo->change < 0)
+                        style="color:red !important"
+                    @endif >{{ $currentStockInfo->change }} ({{ $currentStockInfo->percent }})<span></p>
                 </div>
                 <p class="pt-5 text-red-secondary font-semibold">Select option</p>
                 <div class="flex gap-6 pt-5 flex-col lg:flex-row">
@@ -64,7 +67,7 @@
                     <div class="flex gap-1 flex-col">
                         <p class="text-primary-dark font-semibold">Option Type(s)</p>
                         <select name="option-types" id="option-types" class="border border-primary-dark bg-white px-2 py-1 inline-block h-[34px]">
-                            <option value="all">Calls&puts</option>
+                            <option value="all">Calls & Puts</option>
                             <option value="calls">Calls only</option>
                             <option value="puts">Puts only</option>
                         </select>
@@ -88,11 +91,11 @@
                                 @foreach ($calls->toArray() as $callRow)
                                     <tr data-type="{{ $callRow->optionRange }}" class="px-5 py-2 @if($callRow->optionRange === 'in') bg-panel-white @elseif($callRow->optionRange === 'near') bg-panel-white/30 @endif">
                                         <td class="text-center">{{ $callRow->price ? "$$callRow->price" : '$0.00' }}</td>
-                                        <td class="text-center">---</td>
-                                        <td class="text-center">---</td>
-                                        <td class="text-center">---</td>
-                                        <td class="text-center">{{ $callRow->volume ? "$" . number_format($callRow->volume, 0, ".", ",") : '---' }}</td>
-                                        <td class="text-center">{{ $callRow->openInt ? "$" . number_format($callRow->openInt, 0, ".", ",") : '---' }}</td>
+                                        <td class="text-center">{{ $callRow->bid || $callRow->bid === 0 ? "$" . number_format($callRow->bid, 2, ".", ",") : '---' }}</td>
+                                        <td class="text-center">{{ $callRow->change || $callRow->change === 0 ? "$" . number_format($callRow->change, 2, ".", ",") : '---' }}</td>
+                                        <td class="text-center">{{ $callRow->ask || $callRow->ask === 0  ? "$" . number_format($callRow->ask, 2, ".", ",") : '---' }}</td>
+                                        <td class="text-center">{{ $callRow->volume ?  number_format($callRow->volume, 0, ".", ",") : '---' }}</td>
+                                        <td class="text-center">{{ $callRow->openInt ?  number_format($callRow->openInt, 0, ".", ",") : '---' }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -132,11 +135,11 @@
                                 @foreach ($puts->toArray() as $callRow)
                                     <tr data-type="{{ $callRow->optionRange }}" class="px-5 py-2 @if($callRow->optionRange === 'in') bg-panel-white @elseif($callRow->optionRange === 'near') bg-panel-white/30 @endif">
                                         <td class="text-center">{{ $callRow->price ? "$$callRow->price" : '$0.00' }}</td>
-                                        <td class="text-center">---</td>
-                                        <td class="text-center">---</td>
-                                        <td class="text-center">---</td>
-                                        <td class="text-center">{{ $callRow->volume ? "$" . number_format($callRow->volume, 0, ".", ",") : '---' }}</td>
-                                        <td class="text-center">{{ $callRow->openInt ? "$" . number_format($callRow->openInt, 0, ".", ",") : '---' }}</td>
+                                        <td class="text-center">{{ $callRow->bid || $callRow->bid === 0 ? "$" . number_format($callRow->bid, 2, ".", ",") : '---' }}</td>
+                                        <td class="text-center">{{ $callRow->change || $callRow->change === 0 ? "$" . number_format($callRow->change, 2, ".", ",") : '---' }}</td>
+                                        <td class="text-center">{{ $callRow->ask || $callRow->ask === 0  ? "$" . number_format($callRow->ask, 2, ".", ",") : '---' }}</td>
+                                        <td class="text-center">{{ $callRow->volume ?  number_format($callRow->volume, 0, ".", ",") : '---' }}</td>
+                                        <td class="text-center">{{ $callRow->openInt ?  number_format($callRow->openInt, 0, ".", ",") : '---' }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

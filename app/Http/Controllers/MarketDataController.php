@@ -594,7 +594,7 @@ class MarketDataController extends Controller
     {
         $symbol = $request->route('symbol');
         $date = $request->route('date');
-        [$dates, $calls, $puts, $strikes, $startDate] = $service->getData($symbol, $date);
+        [$dates, $calls, $puts, $strikes, $startDate, $currentStockInfo] = $service->getData($symbol, $date);
         $fact = $service->getRandomFact();
 
         $usFormatedStartDate = $service->getFormatedStartDate($startDate);
@@ -615,7 +615,8 @@ class MarketDataController extends Controller
                 'puts',
                 'strikes',
                 'startDate',
-                'usFormatedStartDate'
+                'usFormatedStartDate',
+                'currentStockInfo'
             )
         );
     }
