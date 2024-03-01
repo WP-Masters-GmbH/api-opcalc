@@ -12,6 +12,7 @@ use App\Models\EarningsEstimate;
 use Illuminate\Support\Facades\DB;
 use App\Models\ActualSymbols;
 use App\Services\Controllers\OptionChainService;
+use App\Models\DividendStocks;
 
 class MarketDataController extends Controller
 {
@@ -513,8 +514,17 @@ class MarketDataController extends Controller
      */
     public function highestDividendYieldStocks()
     {
+        $symbols = ActualSymbols::pluck('symbol')->toArray();
+        $eod_stocks = EOD_StockQuotes::whereIn('symbol', $symbols)->get()->toArray();
+        $table_data = EOD_StockQuotes::prepareMarketData($eod_stocks);
+
+        $dividends = DividendStocks::whereIn('symbol', $symbols)->get()->toArray();
+        $dividendsData = DividendStocks::prepareDevidents($dividends);
+
         return view('pages.front.market-data.highest-dividend-yield-stocks', [
-            'title' => 'Stocks with highest dividend yield'
+            'title' => 'Stocks with highest dividend yield',
+            'table_data' => $table_data,
+            'dividendsData' => $dividendsData
         ]);
     }
 
@@ -523,8 +533,17 @@ class MarketDataController extends Controller
      */
     public function upcomingExDividendDates()
     {
+        $symbols = ActualSymbols::pluck('symbol')->toArray();
+        $eod_stocks = EOD_StockQuotes::whereIn('symbol', $symbols)->get()->toArray();
+        $table_data = EOD_StockQuotes::prepareMarketData($eod_stocks);
+
+        $dividends = DividendStocks::whereIn('symbol', $symbols)->get()->toArray();
+        $dividendsData = DividendStocks::prepareDevidents($dividends);
+
         return view('pages.front.market-data.upcoming-ex-dividend-dates', [
-            'title' => 'Upcoming ex-dividend dates'
+            'title' => 'Upcoming ex-dividend dates',
+            'table_data' => $table_data,
+            'dividendsData' => $dividendsData
         ]);
     }
 
@@ -533,8 +552,17 @@ class MarketDataController extends Controller
      */
     public function monthlyDividendStocks()
     {
+        $symbols = ActualSymbols::pluck('symbol')->toArray();
+        $eod_stocks = EOD_StockQuotes::whereIn('symbol', $symbols)->get()->toArray();
+        $table_data = EOD_StockQuotes::prepareMarketData($eod_stocks);
+
+        $dividends = DividendStocks::whereIn('symbol', $symbols)->get()->toArray();
+        $dividendsData = DividendStocks::prepareDevidents($dividends);
+
         return view('pages.front.market-data.monthly-dividend-stocks', [
-            'title' => 'Stocks with monthly dividends'
+            'title' => 'Stocks with monthly dividends',
+            'table_data' => $table_data,
+            'dividendsData' => $dividendsData
         ]);
     }
 

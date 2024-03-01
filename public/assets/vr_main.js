@@ -173,7 +173,7 @@ $(document).ready(function() {
                     if (response.graph_items.datasets) {
                         $('.backtester-charts').show();
                         $('.backtester-table').show();
-                        initializeChartsStats(response.graph_items, response.graph_items);
+                        initializeChartsStats(response.graph_items, response.graph_items, response.calculator);
                         dca_table.setData(response.table_items);
                         updateTableColumns(response.table_logs);
                         console.log('Count Rows: '+response.count_rows) ;
@@ -209,7 +209,7 @@ $(document).ready(function() {
         return keys.map(key => ({title: key, field: key}));
     }
 
-    function initializeChartsStats(dataBalance, startValueBalance) {
+    function initializeChartsStats(dataBalance, startValueBalance, calculator) {
         if (typeof secondChart !== 'undefined') {
             secondChart.destroy();
         }
@@ -224,7 +224,6 @@ $(document).ready(function() {
         newItem.labels = dataBalance.labels;
 
         var secondctx = document.getElementById('chartBacktester').getContext('2d');
-        console.log(secondctx);
         secondChart = new Chart(secondctx, {
             type: 'line',
             data: newItem,
@@ -277,28 +276,36 @@ $(document).ready(function() {
                                             ].profit ?? 0;
                                 });
 
-                                return label;
+                                return '';
                             },
                             label: function (context) {
-                                const datasetIndex = context.datasetIndex;
+                                const datasetLabel = context.dataset.label ?? '';
                                 const dataIndex = context.dataIndex;
-                                const dataset = context.chart.data.datasets[datasetIndex];
-                                let label = context.dataset.label ?? '';
+                                // Получение ключа даты из массива labels, который должен содержать даты в формате, например '2021-02-01'
+                                const dateKey = context.chart.data.labels[dataIndex];
+                                const strategy = 'buy & hold'; // если стратегия фиксирована
+                                const dataItem = calculator[datasetLabel][strategy][dateKey];
 
-                                if (!!label) {
-                                    label += ': ';
+                                let labels = [];
+                                if (dataItem) {
+                                    // Форматирование даты согласно примеру изображения, например 'Jan 1st, 2024'
+                                    const date = new Date(dateKey);
+                                    const formattedDate = date.toLocaleDateString('en-US', {
+                                        year: 'numeric',
+                                        month: 'short',
+                                        day: 'numeric'
+                                    }).replace(/\b(\d)st\b/, '$1'); // удаляем 'st' после числа, чтобы соответствовать формату изображения
+
+                                    labels.push(formattedDate);
+                                    labels.push('ROI: ' + (dataItem.percent * 100).toFixed(2) + '%'); // ROI как percent, форматировано до двух десятичных знаков
+                                    labels.push('Avg share price: $' + Number(dataItem.average_share_price).toFixed(2));
+                                    labels.push('Share price: $' + Number(dataItem.current_price).toFixed(2));
+                                    labels.push('Total invested: $' + Number(dataItem.total_investments).toFixed(2));
+                                    labels.push('Total value: $' + Number(dataItem.market_value).toFixed(2));
+                                    labels.push('Total profit: $' + Number(dataItem.total_profit).toFixed(2));
                                 }
 
-                                if (dataIndex === 0) {
-                                    return label + '0%';
-                                }
-
-                                const currentValue = (
-                                    Number(dataset.data[dataIndex]) * 100
-                                ).toFixed(2);
-                                label += currentValue + '%';
-
-                                return label;
+                                return labels;
                             },
                         },
                     },
