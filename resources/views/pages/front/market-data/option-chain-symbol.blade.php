@@ -6,7 +6,8 @@
                 Fun fact: {{ $fact }}
             </p>
         </section>
-        <section class="section pt-16">
+        @if($currentStockInfo)
+            <section class="section pt-16">
             <div class="bg-white rounded-sm pt-[9px] px-9 pb-44 mb-4">
                 <div>
                     <p class="text-primary-dark font-semibold">Underlying stock:</p>
@@ -148,5 +149,10 @@
                 </div>
             </div>
         </section>
+        @else
+            <section class="section pt-5 pb-5">
+                <p>There is no Data for {{ $symbol }} symbol</p>
+            </section>
+        @endif
     </main>
     </x-front.layout>

@@ -1,11 +1,14 @@
 <x-front.layout title="{{ $title }}">
     <main class="mt-[68px] vr-styles">
         <section class="section pt-8 pb-8">
-            <h1>{{$symbol}} Dividend History {{$first_date}} : {{$current_date}}</h1>
-            <p>Research into {{$symbol}} dividend history.</p>
+            <h1>{{$symbol}} Dividend History</h1>
 
             <div class="data-table-container">
-                <div id="table-data"></div>
+                @if(!empty($table_data))
+                    <div id="table-data"></div>
+                @else
+                    <p>{{$symbol}} stock does not payout dividends as of {{$current_date}}</p>
+                @endif
             </div>
 
             <script>

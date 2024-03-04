@@ -597,6 +597,10 @@ class MarketDataController extends Controller
         [$dates, $calls, $puts, $strikes, $startDate, $currentStockInfo] = $service->getData($symbol, $date);
         $fact = $service->getRandomFact();
 
+        if(!$startDate) {
+            $startDate = date('Y-m-d');
+        }
+
         $usFormatedStartDate = $service->getFormatedStartDate($startDate);
 
         $title = "Chains Symbol {$symbol}";

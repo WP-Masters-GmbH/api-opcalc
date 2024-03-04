@@ -58,7 +58,7 @@
                     </div>
                     <div class="backtester-list">
                         <div class="backtester-start-search"><span><i class="fa-solid fa-chart-simple"></i></span>
-                        <p>Run backtester to see analyse results</p></div>
+                        <p>Run DCA calculator to see analyse results</p></div>
                     </div>
                     <div class="backtester-charts" style="display: none">
                         <canvas id="chartBacktester" style="height: 500px"></canvas>
