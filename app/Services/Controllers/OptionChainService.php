@@ -14,7 +14,7 @@ class OptionChainService
 {
     /**
      * Get Information for current symbol.
-     * It returns an array [$dates, $calls, $puts, $strikes].
+     * It returns an array [$dates, $calls, $puts, $strikes, $startDate, $currentStockInfo].
      *
      * @param string $symbol Symbol for finding options.
      * @param string|null $date Date for filtering.
