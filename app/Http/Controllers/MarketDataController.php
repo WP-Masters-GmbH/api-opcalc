@@ -593,11 +593,18 @@ class MarketDataController extends Controller
     public function optionChainSymbol(Request $request, OptionChainService $service)
     {
         $symbol = $request->route('symbol');
+
+        if (!isset($symbol)) {
+            abort(404);
+        }
+
+        $symbol = mb_strtoupper($symbol);
+
         $date = $request->route('date');
         [$dates, $calls, $puts, $strikes, $startDate, $currentStockInfo] = $service->getData($symbol, $date);
         $fact = $service->getRandomFact();
 
-        if(!$startDate) {
+        if (!$startDate) {
             $startDate = date('Y-m-d');
         }
 
