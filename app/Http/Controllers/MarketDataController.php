@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\ActualSymbols;
 use App\Services\Controllers\OptionChainService;
 use App\Models\DividendStocks;
+use App\Models\Ratings;
 
 class MarketDataController extends Controller
 {
@@ -571,9 +572,15 @@ class MarketDataController extends Controller
      */
     public function ratingAnalystsPrediction($symbol)
     {
+        $ratingData = Ratings::where('symbol', $symbol)
+            ->orderBy('id', 'desc')
+            ->first();
+
         return view('pages.front.market-data.rating-analysts-prediction', [
             'title' => 'Stock Analysts Estimates, Ratings and Price Targets',
-            'symbol' => $symbol
+            'symbol' => $symbol,
+            'ratingData' => $ratingData,
+            'analysts' => json_decode($ratingData['analysts'], true)
         ]);
     }
 
