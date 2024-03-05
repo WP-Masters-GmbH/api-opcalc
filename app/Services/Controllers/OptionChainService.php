@@ -32,7 +32,7 @@ class OptionChainService
             return null;
         }
 
-        $symbolCollection = collect(json_decode($symbolData));
+        $symbolCollection = collect(json_decode($symbolData)->option);
 
         $datesGrouped = $symbolCollection->groupBy('expiration');
 
