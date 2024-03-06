@@ -1,11 +1,93 @@
 <x-front.layout title="{{ $title }}">
     <main class="mt-[68px] vr-styles">
         <section class="section pt-8 pb-8">
+
+            @if(!empty($eodStock))
+                <div class="price-target-table top-rating-data">
+                    <div class="left-symbol-side">
+                        <div class="symbol-head">{{ $symbol }} - <span class="symbol-desc">{{ $stockProfile['short_description'] }}</span></div>
+                        <div class="price-eod">${{ $eodStock['close'] }}</div>
+                        <div class="price-trand-changing <?php if($eodStock['change_percent'] < 0) { echo 'red'; } ?>"><i class="fa-solid fa-sort-up"></i> <?php echo round($eodStock['change_percent'], 2); ?>%</div>
+                    </div>
+                    <div class="right-side">
+                        <div class="item-table">
+                            <div class="title-table">Market Cap</div>
+                            <div class="content-table">${{ $eodStock['market_cap'] }}</div>
+                        </div>
+                        <div class="item-table">
+                            <div class="title-table">52week range</div>
+                            <div class="content-table">${{ $eodStock['52wl'] }} - ${{ $eodStock['52wh'] }}</div>
+                        </div>
+                        <div class="item-table">
+                            <div class="title-table">Beta</div>
+                            <div class="content-table">{{ $eodStock['beta'] }}</div>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <p>No EOD Stock data for {{ $symbol }}</p>
+            @endif
+
             <h1>{{ $symbol }} Stock Analysts Estimates, Ratings and Price Targets</h1>
 
-            <div class="data-table-container">
-                <div id="table-data"></div>
-            </div>
+            @if(!empty($ratingData))
+                <div class="graph-items-rating">
+                    <div class="price-target-table">
+                        <div class="left-side">
+                            <div class="price-target-head">Analysts Consensus: {{ $ratingData['consensus'] }}</div>
+                            <div class="price-target-content">
+                                <div class="gauge {{ $graphColor }}">
+                                    <img src="/images/arrow-graph.png" alt="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="left-side" style="display: none">
+                            <div class="price-target-head">Options Market: {{ $ratingData['consensus'] }}</div>
+                            <div class="price-target-content">
+                                <div class="gauge {{ $graphColor }}">
+                                    <img src="/images/arrow-graph.png" alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="price-target-table">
+                    <div class="left-side">
+                        <div class="price-target-head">Price Target</div>
+                        <div class="price-target-content">
+                            <div class="big-target-price">${{ $ratingData['price_target'] }}</div>
+                            <div class="price-trand-changing <?php if($upsidePercent < 0) { echo 'red'; } ?>"><i class="fa-solid fa-sort-up"></i> {{ $upsidePercent }}% Upside</div>
+                        </div>
+                    </div>
+                    <div class="right-side">
+                        <div class="item-table">
+                            <div class="title-table">Avg forecast</div>
+                            <div class="content-table">${{ $ratingData['avg'] }}</div>
+                        </div>
+                        <div class="item-table">
+                            <div class="title-table">High forecast</div>
+                            <div class="content-table">${{ $ratingData['high'] }}</div>
+                        </div>
+                        <div class="item-table">
+                            <div class="title-table">Low forecast</div>
+                            <div class="content-table">${{ $ratingData['low'] }}</div>
+                        </div>
+                        <div class="item-table">
+                            <div class="title-table"># of Analysts</div>
+                            <div class="content-table">{{ $ratingData['num_analysts'] }}</div>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <p>No Rating data for {{ $symbol }}</p>
+            @endif
+
+            @if(!empty($analysts))
+                <div class="data-table-container">
+                    <div id="table-data"></div>
+                </div>
+            @endif
 
             <script>
                 jQuery(document).ready(function ($) {
@@ -21,8 +103,22 @@
                             if(empty($analyst['price_target'])) {
                                 continue;
                             }
+
+                            $status = $analyst['action'];
+                            if($status == 'Boost Target') {
+                                $status = 'Upgrade';
+                            } elseif($status == 'Lower Target') {
+                                $status = 'Downgrade';
+                            } elseif($status == 'Initiated Coverage') {
+                                $status = 'First rating';
+                            } elseif($status == 'Reiterated Rating') {
+                                $status = 'Maintained';
+                            } elseif($status == 'Set target') {
+                                $status = 'Initiated Coverage';
+                            }
+
                             ?>
-                        {id:<?php echo $index; ?>, date:"<?php echo date('Y-m-d', strtotime($analyst['date'])); ?>", firm:"<?php echo $analyst['brokerage']; ?>", status:"<?php echo $analyst['action']; ?>", price_target:"<?php echo $analyst['price_target']; ?>", upside:"<?php echo $upside_downside; ?>"},
+                        {id:<?php echo $index; ?>, date:"<?php echo date('Y-m-d', strtotime($analyst['date'])); ?>", firm:"<?php echo $analyst['brokerage']; ?>", status:"<?php echo $status; ?>", price_target:"<?php echo $analyst['price_target']; ?>", upside:"<?php echo $upside_downside; ?>"},
                         <?php $index++; endforeach; ?>
                         <?php endif; ?>
                     ];

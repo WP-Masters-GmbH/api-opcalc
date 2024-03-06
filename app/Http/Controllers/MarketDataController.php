@@ -14,6 +14,7 @@ use App\Models\ActualSymbols;
 use App\Services\Controllers\OptionChainService;
 use App\Models\DividendStocks;
 use App\Models\Ratings;
+use App\Models\StockProfile;
 
 class MarketDataController extends Controller
 {
@@ -572,15 +573,27 @@ class MarketDataController extends Controller
      */
     public function ratingAnalystsPrediction($symbol)
     {
-        $ratingData = Ratings::where('symbol', $symbol)
-            ->orderBy('id', 'desc')
-            ->first();
+        $ratingData = Ratings::where('symbol', $symbol)->orderBy('id', 'desc')->first();
+        $eodStock = EOD_StockQuotes::where('symbol', $symbol)->orderBy('id', 'desc')->first();
+        $stockProfile = StockProfile::where('symbol', $symbol)->first()->toArray();
+
+        if($ratingData) {
+            $ratingData = $ratingData->toArray();
+        }
+
+        if($eodStock) {
+            $eodStock = $eodStock->toArray();
+        }
 
         return view('pages.front.market-data.rating-analysts-prediction', [
             'title' => 'Stock Analysts Estimates, Ratings and Price Targets',
             'symbol' => $symbol,
             'ratingData' => $ratingData,
-            'analysts' => json_decode($ratingData['analysts'], true)
+            'analysts' => isset($ratingData['analysts']) ? json_decode($ratingData['analysts'], true) : [],
+            'graphColor' => isset($ratingData['consensus']) ? Ratings::getGraphColor($ratingData['consensus']) : 'red',
+            'eodStock' => $eodStock,
+            'upsidePercent' => isset($ratingData['price_target']) && isset($eodStock['close']) ? Ratings::getUpsideColor($ratingData['price_target'], $eodStock['close']) : 0,
+            'stockProfile' => $stockProfile
         ]);
     }
 

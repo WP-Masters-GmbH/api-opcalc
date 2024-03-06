@@ -392,3 +392,160 @@
 .form-search-symbol .flexed-input-search button:hover {
     color: #db6536;
 }
+
+.price-target-table {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.top-rating-data {
+    margin-bottom: 40px;
+}
+
+.top-rating-data .symbol-head {
+    font-size: 25px;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.top-rating-data .symbol-head .symbol-desc {
+    font-size: 16px;
+    font-weight: normal;
+}
+
+.top-rating-data .price-eod {
+    font-size: 24px;
+    font-weight: 500;
+    margin-left: 10px;
+}
+
+.price-target-table .left-side {
+    border: 1px solid #d9d9d9;
+    border-radius: 10px;
+}
+
+.price-target-table .right-side .item-table {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+}
+
+.price-target-table .right-side .item-table:nth-child(1) {
+    border-top: 1px solid #d5d5d5;
+    margin-top: 58px;
+}
+
+.top-rating-data .right-side .item-table:nth-child(1) {
+    margin: 0;
+}
+
+.price-target-table .right-side .item-table:nth-last-child(1) {
+    border-bottom: 1px solid #d5d5d5;
+}
+
+.price-target-table .right-side .item-table:nth-child(odd) {
+    background: #d4dfee;
+}
+
+.price-target-table > div {
+    width: 50%;
+}
+
+.top-rating-data .right-side {
+    width: 75%;
+}
+
+.price-target-head {
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 18px;
+    padding: 15px 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.big-target-price {
+    font-size: 48px;
+    font-weight: 600;
+}
+
+.price-trand-changing {
+    color: #027250;
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 20px;
+}
+
+.price-trand-changing.red {
+    color: #b23727;
+}
+
+.price-trand-changing.red svg {
+    transform: rotate(180deg);
+    top: -6px;
+}
+
+.price-trand-changing svg {
+    position: relative;
+    top: 10px;
+    font-size: 32px;
+    margin-right: 10px;
+}
+
+.price-target-content {
+    text-align: center;
+    padding: 20px;
+}
+
+.price-trand-changing {
+    justify-content: center;
+}
+
+.top-rating-data .price-trand-changing {
+    justify-content: flex-start;
+    margin-left: 10px;
+}
+
+.gauge {
+    position: relative;
+    width: 204px;
+    height: 115px;
+    background: url('/images/half-circle-graph.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.gauge img {
+    transform: rotate(32deg);
+    transform-origin: bottom;
+    object-fit: none;
+}
+
+.gauge.red img {
+    transform: rotate(295deg);
+}
+
+.gauge.orange img {
+    transform: rotate(330deg);
+}
+
+.gauge.yellow img {
+    transform: rotate(1deg);
+}
+
+.gauge.light-green img {
+    transform: rotate(32deg);
+}
+
+.gauge.green img {
+    transform: rotate(65deg);
+}
+
+.graph-items-rating {
+    margin-bottom: 20px;
+}
