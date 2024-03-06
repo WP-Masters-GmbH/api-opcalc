@@ -32,6 +32,7 @@ Route::get('/option-pinning-strategy', [PagesController::class, 'optionPinningSt
 Route::get('/financial-tools/dollar-cost-averaging-calculator', [FinancialToolsController::class, 'dollarCostAveragingCalculator'])->name('dollar-cost-averaging-calculator');
 Route::get('/financial-tools/earnings-simulator', [FinancialToolsController::class, 'earningsSimulator'])->name('earnings-simulator');
 
+
 // Options Data
 Route::get('/market-data/highest-iv-options', [MarketDataController::class, 'highestIVOptions'])->name('highest-iv-options');
 Route::get('/market-data/highest-volume-options', [MarketDataController::class, 'highestVolumeOptions'])->name('highest-volume-options');
@@ -46,6 +47,10 @@ Route::get('/market-data/stocks/highest-beta-stocks', [MarketDataController::cla
 Route::get('/market-data/stocks/lowest-beta-stocks', [MarketDataController::class, 'lowestBetaStocks'])->name('lowest-beta-stocks');
 Route::get('/market-data/stocks/eod-stock-prices/{symbol}', [MarketDataController::class, 'eodStockPrices'])->name('eod-stock-prices');
 
+
+Route::get('/market-data/best-performing-stocks-yesterday', [MarketDataController::class, 'bestPerformingStocksYesterday'])->name('best-performing-stocks-yesterday');
+Route::get('/market-data/worst-performing-stocks-yesterday', [MarketDataController::class, 'worstPerformingStocksYesterday'])->name('worst-performing-stocks-yesterday');
+
 // Dividend Data
 Route::get('/market-data/dividends/{symbol}/dividend-history', [MarketDataController::class, 'dividendHistory'])->name('dividend-history');
 Route::get('/market-data/dividends/highest-dividend-yield-stocks', [MarketDataController::class, 'highestDividendYieldStocks'])->name('highest-dividend-yield-stocks');
@@ -54,6 +59,7 @@ Route::get('/market-data/dividends/monthly-dividend-stocks', [MarketDataControll
 
 // Ratings & Analysts predictions
 Route::get('/market-data/ratings/{symbol}', [MarketDataController::class, 'ratingAnalystsPrediction'])->name('rating-analysts-prediction');
+Route::get('/market-data/upcoming-earnings', [MarketDataController::class, 'upcomingEarnings'])->name('upcoming-earnings');
 
 // Option Chain
 Route::get('/market-data/option-chains', [MarketDataController::class, 'optionChainSearch'])->name('option-chain-search');

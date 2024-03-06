@@ -33,6 +33,8 @@
                     <li><a href="{{ route('highest-beta-stocks') }}">Highest Beta Stocks</a> - View stocks with the highest beta score</li>
                     <li><a href="{{ route('lowest-beta-stocks') }}">Lowest Beta stocks</a> - View stocks with the lowest beta score</li>
                     <li><a href="{{ route('eod-stock-prices', ['TSLA']) }}">EOD stock data</a> - View all open, high, low, and closing prices for all option contracts</li>
+                    <li><a href="{{ route('best-performing-stocks-yesterday') }}">Best performing stocks</a></li>
+                    <li><a href="{{ route('worst-performing-stocks-yesterday') }}">Worst performing stocks</a></li>
                 </ul>
             </div>
 
@@ -51,6 +53,7 @@
                 <h2>Ratings & Analysts predictions</h2>
                 <ul>
                     <li><a href="{{ route('rating-analysts-prediction', ['TSLA']) }}">Stock Analysts Estimates, Ratings and Price Targets</a></li>
+                    <li><a href="{{ route('upcoming-earnings') }}">Upcoming Earning Dates & Estimates</a></li>
                 </ul>
             </div>
         </section>

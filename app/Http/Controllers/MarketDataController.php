@@ -442,6 +442,64 @@ class MarketDataController extends Controller
     }
 
     /**
+     * Best performing stocks Page
+     */
+    public function bestPerformingStocksYesterday()
+    {
+        // Prepare Variables
+        $symbols = ActualSymbols::pluck('symbol')->toArray();
+        $yesterday = date('Y-m-d', strtotime('-1 day'));
+
+        // Get number day of the week
+        $dayOfWeek = date('N', strtotime($yesterday));
+
+        // If weekends - get last Friday
+        if ($dayOfWeek == 6 || $dayOfWeek == 7) {
+            $yesterday = date('Y-m-d', strtotime('last Friday'));
+        }
+
+        $eod_stocks = EOD_StockQuotes::whereIn('symbol', $symbols)->where('date', $yesterday)->get()->toArray();
+
+        // Prepare Table Data
+        $market_data = EOD_StockQuotes::prepareMarketData($eod_stocks);
+
+        return view('pages.front.market-data.best-performing-stocks-yesterday', [
+            'title' => "Yesterday Best performing stocks",
+            'yesterday' => $yesterday,
+            'market_data' => $market_data
+        ]);
+    }
+
+    /**
+     * Worst performing stocks Page
+     */
+    public function worstPerformingStocksYesterday()
+    {
+        // Prepare Variables
+        $symbols = ActualSymbols::pluck('symbol')->toArray();
+        $yesterday = date('Y-m-d', strtotime('-1 day'));
+
+        // Get number day of the week
+        $dayOfWeek = date('N', strtotime($yesterday));
+
+        // If weekends - get last Friday
+        if ($dayOfWeek == 6 || $dayOfWeek == 7) {
+            $yesterday = date('Y-m-d', strtotime('last Friday'));
+        }
+
+        $eod_stocks = EOD_StockQuotes::whereIn('symbol', $symbols)->where('date', $yesterday)->get()->toArray();
+
+        // Prepare Table Data
+        $market_data = EOD_StockQuotes::prepareMarketData($eod_stocks);
+
+        return view('pages.front.market-data.worst-performing-stocks-yesterday', [
+            'title' => "Yesterday Worst performing stocks",
+            'yesterday' => $yesterday,
+            'market_data' => $market_data
+        ]);
+    }
+
+    /**
      * Lowest Beta stocks Page
      */
     public function lowestBetaStocks()
@@ -589,11 +647,39 @@ class MarketDataController extends Controller
             'title' => 'Stock Analysts Estimates, Ratings and Price Targets',
             'symbol' => $symbol,
             'ratingData' => $ratingData,
-            'analysts' => isset($ratingData['analysts']) ? json_decode($ratingData['analysts'], true) : [],
-            'graphColor' => isset($ratingData['consensus']) ? Ratings::getGraphColor($ratingData['consensus']) : 'red',
+            'analysts' => isset($ratingData['analysts']) && !empty($ratingData['analysts']) ? json_decode($ratingData['analysts'], true) : [],
+            'graphColor' => isset($ratingData['consensus']) && !empty($ratingData['consensus']) ? Ratings::getGraphColor($ratingData['consensus']) : 'red',
             'eodStock' => $eodStock,
             'upsidePercent' => isset($ratingData['price_target']) && isset($eodStock['close']) ? Ratings::getUpsideColor($ratingData['price_target'], $eodStock['close']) : 0,
             'stockProfile' => $stockProfile
+        ]);
+    }
+
+    /**
+     * Upcoming Earnings Page
+     */
+    public function upcomingEarnings()
+    {
+        $symbols = ActualSymbols::pluck('symbol')->toArray();
+        $earnings = EarningsEstimate::select('earnings_estimate.*')
+            ->fromSub(function ($query) use ($symbols) {
+                $query->from('earnings_estimate')
+                    ->whereIn('symbol', $symbols)
+                    ->selectRaw('id, symbol, est_earnings_date, e_eps, e_rev, ROW_NUMBER() OVER (PARTITION BY symbol ORDER BY est_earnings_date ASC) as rn')
+                    ->where('est_earnings_date', '>=', date('Y-m-d'))
+                    ->where('est_earnings_date', '<=', date('Y-m-d', strtotime('+30 days')));
+            }, 'earnings_estimate')
+            ->where('rn', 1)
+            ->get()
+            ->toArray();
+
+        $eod_stocks = EOD_StockQuotes::whereIn('symbol', $symbols)->get()->toArray();
+        $eod_stocks = EOD_StockQuotes::prepareMarketData($eod_stocks);
+
+        return view('pages.front.market-data.upcoming-earnings', [
+            'title' => 'Upcoming earning dates & estimates',
+            'eod_stocks' => $eod_stocks,
+            'earnings' => $earnings
         ]);
     }
 
