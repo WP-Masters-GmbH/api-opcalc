@@ -1,4 +1,6 @@
 <x-front.layout title="{{ $title }}">
+    @inject('homeFunctions', 'App\Services\Commands\PagesFunctions\HomeFunctions')
+
     <main class="mt-[68px]">
         <section class="section pt-16">
           <div>
@@ -25,17 +27,17 @@
             <div
               class="flex gap-8 py-2 border-b-2 border-b-blue-primary flex-wrap"
             >
-              <button data-table="1" class="rates-tab rates-tab_active">
+              <button data-table="1" class="rates-tab rates-tab_active" data-button-link="{{ route('highest-iv-options') }}">
                 Highest IV options
               </button>
-              <button data-table="2" class="rates-tab">
+              <button data-table="2" class="rates-tab" data-button-link="{{ route('stocks-by-market-cap') }}">
                 Stocks by Market Cap
               </button>
-              <button data-table="3" class="rates-tab">Upcoming earnings</button>
-              <button data-table="4" class="rates-tab">
+              <button data-table="3" class="rates-tab" data-button-link="{{ route('upcoming-earnings') }}">Upcoming earnings</button>
+              <button data-table="4" class="rates-tab" data-button-link="{{ route('highest-dividend-yield-stocks') }}">
                 Highest dividend paying stocks
               </button>
-              <button data-table="5" class="rates-tab">
+              <button data-table="5" class="rates-tab" data-button-link="{{ route('best-performing-stocks-yesterday') }}">
                 Yesterday's biggest gainers
               </button>
             </div>
@@ -102,84 +104,29 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr class="even:bg-white odd:bg-gray-50 border-b">
+                        @foreach($HighestIVTableData as $row)
+                            <tr class="even:bg-white odd:bg-gray-50 border-b">
+                                <?php //dd($row); ?>
                         <th
                           scope="row"
                           class="px-6 py-2 text-black text-xs font-normal"
                         >
-                          ABC
+                          {{ $row['symbol'] }}
                         </th>
-                        <td class="px-6 py-2 text-black text-xs">$190.32</td>
+                        <td class="px-6 py-2 text-black text-xs">$@php echo round($HighestIVTableStocks[$row['symbol']]['close'], 2); @endphp</td>
                         <td class="px-6 py-2 text-black text-xs font-bold">
-                          300%
+                            @php echo round($row['volatility'], 2).'%' @endphp
                         </td>
-                        <td class="px-6 py-2 text-green-primary text-xs">
-                          5.30%
+                        <td class="px-6 py-2 @if($row['change'] > 0) text-green-primary @elseif($row['change'] < 0) text-red-primary @endif text-xs">
+                            @php echo round($row['change'], 2).'%' @endphp
                         </td>
-                        <td class="px-6 py-2 text-black text-xs">Call</td>
-                        <td class="px-6 py-2 text-black text-xs">15</td>
-                        <td class="px-6 py-2 text-black text-xs">1.50</td>
-                        <td class="px-6 py-2 text-black text-xs">01/15/24</td>
-                        <td class="px-6 py-2 text-black text-xs">05/30/24</td>
+                        <td class="px-6 py-2 text-black text-xs">@php echo ucfirst($row['putCall']) @endphp</td>
+                        <td class="px-6 py-2 text-black text-xs">{{ $row['strikePrice'] }}</td>
+                        <td class="px-6 py-2 text-black text-xs">{{ $row['price'] }}</td>
+                        <td class="px-6 py-2 text-black text-xs">@php echo date('m/d/Y', strtotime($row['expiration'])) @endphp</td>
+                        <td class="px-6 py-2 text-black text-xs">@php echo isset($HighestIVTableEarningsEstimates[$row['symbol']]['est_earnings_date']) ? date('m/d/Y', strtotime($HighestIVTableEarningsEstimates[$row['symbol']]['est_earnings_date'])) : 'n/a' @endphp</td>
                       </tr>
-                      <tr class="even:bg-white odd:bg-gray-50 border-b">
-                        <th
-                          scope="row"
-                          class="px-6 py-2 text-black text-xs font-normal"
-                        >
-                          ABC
-                        </th>
-                        <td class="px-6 py-2 text-black text-xs">$190.32</td>
-                        <td class="px-6 py-2 text-black text-xs font-bold">
-                          300%
-                        </td>
-                        <td class="px-6 py-2 text-red-primary text-xs">-5.30%</td>
-                        <td class="px-6 py-2 text-black text-xs">Call</td>
-                        <td class="px-6 py-2 text-black text-xs">15</td>
-                        <td class="px-6 py-2 text-black text-xs">1.50</td>
-                        <td class="px-6 py-2 text-black text-xs">01/15/24</td>
-                        <td class="px-6 py-2 text-black text-xs">05/30/24</td>
-                      </tr>
-                      <tr class="even:bg-white odd:bg-gray-50 border-b">
-                        <th
-                          scope="row"
-                          class="px-6 py-2 text-black text-xs font-normal"
-                        >
-                          ABC
-                        </th>
-                        <td class="px-6 py-2 text-black text-xs">$190.32</td>
-                        <td class="px-6 py-2 text-black text-xs font-bold">
-                          300%
-                        </td>
-                        <td class="px-6 py-2 text-green-primary text-xs">
-                          5.30%
-                        </td>
-                        <td class="px-6 py-2 text-black text-xs">Call</td>
-                        <td class="px-6 py-2 text-black text-xs">15</td>
-                        <td class="px-6 py-2 text-black text-xs">1.50</td>
-                        <td class="px-6 py-2 text-black text-xs">01/15/24</td>
-                        <td class="px-6 py-2 text-black text-xs">05/30/24</td>
-                      </tr>
-                      <tr class="even:bg-white odd:bg-gray-50 border-b">
-                        <th
-                          scope="row"
-                          class="px-6 py-2 text-black text-xs font-normal"
-                        >
-                          ABC
-                        </th>
-                        <td class="px-6 py-2 text-black text-xs">$190.32</td>
-                        <td class="px-6 py-2 text-black text-xs font-bold">
-                          300%
-                        </td>
-                        <td class="px-6 py-2 text-green-primary text-xs">
-                          5.30%
-                        </td>
-                        <td class="px-6 py-2 text-black text-xs">Call</td>
-                        <td class="px-6 py-2 text-black text-xs">15</td>
-                        <td class="px-6 py-2 text-black text-xs">1.50</td>
-                        <td class="px-6 py-2 text-black text-xs">01/15/24</td>
-                        <td class="px-6 py-2 text-black text-xs">05/30/24</td>
-                      </tr>
+                        @endforeach
                     </tbody>
                   </table>
                 </div>
@@ -193,91 +140,61 @@
                           scope="col"
                           class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
                         >
-                          ticker
+                          Symbol
                         </th>
                         <th
                           scope="col"
                           class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
                         >
-                          Market cap
+                          Close Price
                         </th>
                         <th
                           scope="col"
                           class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
                         >
-                          52week hi/lo
+                          Change Percent
                         </th>
                         <th
                           scope="col"
                           class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
                         >
-                          last price
+                          52 Week Low
                         </th>
                         <th
                           scope="col"
                           class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
                         >
-                          Change
+                          52 Week High
                         </th>
                         <th
                           scope="col"
                           class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
                         >
-                          %Change
-                        </th>
-                        <th
-                          scope="col"
-                          class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
-                        >
-                          Volume
+                          Market Cap
                         </th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr class="even:bg-white odd:bg-gray-50 border-b">
+                        @foreach($MarketCapTableData as $row)
+                            <tr class="even:bg-white odd:bg-gray-50 border-b">
                         <th
                           scope="row"
-                          class="px-6 py-2 text-black text-xs font-bold"
+                          class="px-6 py-2 text-black text-xs font-normal"
                         >
-                          AAPL
+                          {{ $row['symbol'] }}
                         </th>
+
+                        <td class="px-6 py-2 text-black text-xs">@php echo round($row['close'], 2) @endphp</td>
+                        <td class="px-6 py-2 @if($row['change_percent'] > 0) text-green-primary @elseif($row['change_percent'] < 0) text-red-primary @endif text-xs">
+                            @php echo round($row['change_percent'], 2) @endphp%
+                        </td>
+                        <td class="px-6 py-2 text-black text-xs">{{ $row['52wl'] }}</td>
+                        <td class="px-6 py-2 text-black text-xs">{{ $row['52wh'] }}</td>
                         <td class="px-6 py-2 text-black text-xs font-bold">
-                          795.648M
-                        </td>
-                        <td class="px-6 py-2 text-black text-xs">90.15B</td>
-                        <td class="px-6 py-2 text-black text-xs">4.4800</td>
-                        <td class="px-6 py-2 text-red-primary text-xs">
-                          -2.2300
-                        </td>
-                        <td class="px-6 py-2 text-green-primary text-xs">
-                          +4.88%
-                        </td>
-                        <td class="px-6 py-2 text-green-primary text-xs">
-                          66.705M
+                            {{ $row['market_cap'] }}
                         </td>
                       </tr>
-                      <tr class="even:bg-white odd:bg-gray-50 border-b">
-                        <th
-                          scope="row"
-                          class="px-6 py-2 text-black text-xs font-bold"
-                        >
-                          AAPL
-                        </th>
-                        <td class="px-6 py-2 text-black text-xs font-bold">
-                          795.648M
-                        </td>
-                        <td class="px-6 py-2 text-black text-xs">90.15B</td>
-                        <td class="px-6 py-2 text-black text-xs">4.4800</td>
-                        <td class="px-6 py-2 text-red-primary text-xs">
-                          -2.2300
-                        </td>
-                        <td class="px-6 py-2 text-green-primary text-xs">
-                          +4.88%
-                        </td>
-                        <td class="px-6 py-2 text-green-primary text-xs">
-                          66.705M
-                        </td>
-                      </tr>
+                        @endforeach
                     </tbody>
                   </table>
                 </div>
@@ -303,145 +220,53 @@
                           scope="col"
                           class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
                         >
-                          EPS
+                          Upcoming Earnings
                         </th>
                         <th
                           scope="col"
                           class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
                         >
-                          ~est EPS
+                          EPS Estimate
                         </th>
                         <th
                           scope="col"
                           class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
                         >
-                          Price Range
+                          REV Estimate
                         </th>
                         <th
                           scope="col"
                           class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
                         >
-                          Options Premium
-                        </th>
-                        <th
-                          scope="col"
-                          class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
-                        >
-                          Simulate
+                          1YR Gain
                         </th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr class="even:bg-white odd:bg-gray-50 border-b">
-                        <th
-                          scope="row"
-                          class="px-6 py-2 text-black text-xs font-bold"
-                        >
-                          AAPL
-                        </th>
-                        <td class="px-6 py-2 text-black text-xs font-bold">
-                          $190.32
-                        </td>
-                        <td class="px-6 py-2 text-black text-xs">14.50</td>
-                        <td class="px-6 py-2 text-black text-xs font-bold">
-                          4.35
-                        </td>
-                        <td class="px-6 py-2 text-black text-xs">
-                          $180.00 : $200.35
-                        </td>
-                        <td class="px-6 py-2 text-green-primary text-xs">
-                          6.37%
-                        </td>
-                        <td class="px-6 py-2 text-black text-xs">
-                          <a
-                            href=""
-                            class="rounded-md text-white bg-dark-primary capitalize py-1 px-3 font-medium"
-                            >simulate</a
-                          >
-                        </td>
-                      </tr>
-                      <tr class="even:bg-white odd:bg-gray-50 border-b">
-                        <th
-                          scope="row"
-                          class="px-6 py-2 text-black text-xs font-bold"
-                        >
-                          AAPL
-                        </th>
-                        <td class="px-6 py-2 text-black text-xs font-bold">
-                          $190.32
-                        </td>
-                        <td class="px-6 py-2 text-black text-xs">14.50</td>
-                        <td class="px-6 py-2 text-black text-xs font-bold">
-                          4.35
-                        </td>
-                        <td class="px-6 py-2 text-black text-xs">
-                          $180.00 : $200.35
-                        </td>
-                        <td class="px-6 py-2 text-red-primary text-xs">-6.37%</td>
-                        <td class="px-6 py-2 text-black text-xs">
-                          <a
-                            href=""
-                            class="rounded-md text-white bg-dark-primary capitalize py-1 px-3 font-medium"
-                            >simulate</a
-                          >
-                        </td>
-                      </tr>
-                      <tr class="even:bg-white odd:bg-gray-50 border-b">
-                        <th
-                          scope="row"
-                          class="px-6 py-2 text-black text-xs font-bold"
-                        >
-                          AAPL
-                        </th>
-                        <td class="px-6 py-2 text-black text-xs font-bold">
-                          $190.32
-                        </td>
-                        <td class="px-6 py-2 text-black text-xs">14.50</td>
-                        <td class="px-6 py-2 text-black text-xs font-bold">
-                          4.35
-                        </td>
-                        <td class="px-6 py-2 text-black text-xs">
-                          $180.00 : $200.35
-                        </td>
-                        <td class="px-6 py-2 text-green-primary text-xs">
-                          6.37%
-                        </td>
-                        <td class="px-6 py-2 text-black text-xs">
-                          <a
-                            href=""
-                            class="rounded-md text-white bg-dark-primary capitalize py-1 px-3 font-medium"
-                            >simulate</a
-                          >
-                        </td>
-                      </tr>
-                      <tr class="even:bg-white odd:bg-gray-50 border-b">
-                        <th
-                          scope="row"
-                          class="px-6 py-2 text-black text-xs font-bold"
-                        >
-                          AAPL
-                        </th>
-                        <td class="px-6 py-2 text-black text-xs font-bold">
-                          $190.32
-                        </td>
-                        <td class="px-6 py-2 text-black text-xs">14.50</td>
-                        <td class="px-6 py-2 text-black text-xs font-bold">
-                          4.35
-                        </td>
-                        <td class="px-6 py-2 text-black text-xs">
-                          $180.00 : $200.35
-                        </td>
-                        <td class="px-6 py-2 text-green-primary text-xs">
-                          6.37%
-                        </td>
-                        <td class="px-6 py-2 text-black text-xs">
-                          <a
-                            href=""
-                            class="rounded-md text-white bg-dark-primary capitalize py-1 px-3 font-medium"
-                            >simulate</a
-                          >
-                        </td>
-                      </tr>
+                        @foreach($UpcomingEarnings as $row)
+                            @if(!isset($EODStocks[$row['symbol']]))
+                                @continue
+                            @endif
+                          <tr class="even:bg-white odd:bg-gray-50 border-b">
+                            <th
+                              scope="row"
+                              class="px-6 py-2 text-black text-xs font-normal"
+                            >
+                                {{ $row['symbol'] }}
+                            </th>
+                            <td class="px-6 py-2 text-black text-xs font-bold">
+                              {{ $EODStocks[$row['symbol']]['close'] }}
+                            </td>
+                            <td class="px-6 py-2 text-black text-xs"><?php echo date('d/m/Y', strtotime($row['est_earnings_date'])); ?></td>
+                            <td class="px-6 py-2 text-black text-xs">{{ $row['e_eps'] }}</td>
+                            <td class="px-6 py-2 text-black text-xs font-bold">
+                                {{ HomeFunctions::change_price_format($row['e_rev']) }}
+                            </td>
+                            <td class="px-6 py-2 @if($EODStocks[$row['symbol']]['1yr'] > 0) text-green-primary @elseif($EODStocks[$row['symbol']]['1yr'] < 0) text-red-primary @endif text-xs">
+                                <?php echo round($EODStocks[$row['symbol']]['1yr'], 2); ?>%
+                            </td>
+                          </tr>
+                        @endforeach
                     </tbody>
                   </table>
                 </div>
@@ -455,91 +280,53 @@
                           scope="col"
                           class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
                         >
-                          ticker
+                          Ticker
                         </th>
                         <th
                           scope="col"
                           class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
                         >
-                          Market cap
+                          Mark
                         </th>
                         <th
                           scope="col"
                           class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
                         >
-                          52week hi/lo
+                          Dividend Yield
                         </th>
                         <th
                           scope="col"
                           class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
                         >
-                          last price
+                          Annual Dividend Increase
                         </th>
                         <th
                           scope="col"
                           class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
                         >
-                          Change
-                        </th>
-                        <th
-                          scope="col"
-                          class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
-                        >
-                          %Change
-                        </th>
-                        <th
-                          scope="col"
-                          class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
-                        >
-                          Volume
+                          Next EX-Dividend Date
                         </th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr class="even:bg-white odd:bg-gray-50 border-b">
-                        <th
-                          scope="row"
-                          class="px-6 py-2 text-black text-xs font-bold"
-                        >
-                          AAPL
-                        </th>
-                        <td class="px-6 py-2 text-black text-xs font-bold">
-                          795.648M
-                        </td>
-                        <td class="px-6 py-2 text-black text-xs">90.15B</td>
-                        <td class="px-6 py-2 text-black text-xs">4.4800</td>
-                        <td class="px-6 py-2 text-red-primary text-xs">
-                          -2.2300
-                        </td>
-                        <td class="px-6 py-2 text-green-primary text-xs">
-                          +4.88%
-                        </td>
-                        <td class="px-6 py-2 text-green-primary text-xs">
-                          66.705M
-                        </td>
-                      </tr>
-                      <tr class="even:bg-white odd:bg-gray-50 border-b">
-                        <th
-                          scope="row"
-                          class="px-6 py-2 text-black text-xs font-bold"
-                        >
-                          AAPL
-                        </th>
-                        <td class="px-6 py-2 text-black text-xs font-bold">
-                          795.648M
-                        </td>
-                        <td class="px-6 py-2 text-black text-xs">90.15B</td>
-                        <td class="px-6 py-2 text-black text-xs">4.4800</td>
-                        <td class="px-6 py-2 text-red-primary text-xs">
-                          -2.2300
-                        </td>
-                        <td class="px-6 py-2 text-green-primary text-xs">
-                          +4.88%
-                        </td>
-                        <td class="px-6 py-2 text-green-primary text-xs">
-                          66.705M
-                        </td>
-                      </tr>
+                        @foreach($HighestDividends as $row)
+                          <tr class="even:bg-white odd:bg-gray-50 border-b">
+                            <th
+                              scope="row"
+                              class="px-6 py-2 text-black text-xs font-normal"
+                            >
+                              {{ $row['symbol'] }}
+                            </th>
+                            <td class="px-6 py-2 text-black text-xs font-bold">
+                                {{ $HighestDividendTableData[$row['symbol']]['close'] }}
+                            </td>
+                            <td class="px-6 py-2 @if($row['current_yield'] > 0) text-green-primary @elseif($row['current_yield'] < 0) text-red-primary @endif text-xs">@php echo round($row['current_yield'] * 100, 2) @endphp%</td>
+                            <td class="px-6 py-2 @if($row['last_dividend_amount'] > 0) text-green-primary @elseif($row['last_dividend_amount'] < 0) text-red-primary @endif text-xs">{{ $row['last_dividend_amount'] }}%</td>
+                            <td class="px-6 py-2 text-xs">
+                                <?php echo isset($row['ex_date']) && !empty($row['ex_date']) ? date('d/m/Y', strtotime($row['ex_date'])) : 'n/a'; ?>
+                            </td>
+                          </tr>
+                        @endforeach
                     </tbody>
                   </table>
                 </div>
@@ -553,37 +340,19 @@
                           scope="col"
                           class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
                         >
-                          ticker
+                          Ticker
                         </th>
                         <th
                           scope="col"
                           class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
                         >
-                          Market cap
+                          Closing Price
                         </th>
                         <th
                           scope="col"
                           class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
                         >
-                          52week hi/lo
-                        </th>
-                        <th
-                          scope="col"
-                          class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
-                        >
-                          last price
-                        </th>
-                        <th
-                          scope="col"
-                          class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
-                        >
-                          Change
-                        </th>
-                        <th
-                          scope="col"
-                          class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
-                        >
-                          %Change
+                          Gain
                         </th>
                         <th
                           scope="col"
@@ -591,103 +360,48 @@
                         >
                           Volume
                         </th>
+                        <th
+                          scope="col"
+                          class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
+                        >
+                          Beta
+                        </th>
+                        <th
+                          scope="col"
+                          class="px-6 py-3 uppercase text-neutral pt-4 pb-8 text-xs font-extrabold"
+                        >
+                          Market Cap
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr class="even:bg-white odd:bg-gray-50 border-b">
-                        <th
-                          scope="row"
-                          class="px-6 py-2 text-black text-xs font-bold"
-                        >
-                          AAPL
-                        </th>
-                        <td class="px-6 py-2 text-black text-xs font-bold">
-                          795.648M
-                        </td>
-                        <td class="px-6 py-2 text-black text-xs">90.15B</td>
-                        <td class="px-6 py-2 text-black text-xs">4.4800</td>
-                        <td class="px-6 py-2 text-red-primary text-xs">
-                          -2.2300
-                        </td>
-                        <td class="px-6 py-2 text-green-primary text-xs">
-                          +4.88%
-                        </td>
-                        <td class="px-6 py-2 text-green-primary text-xs">
-                          66.705M
-                        </td>
-                      </tr>
-                      <tr class="even:bg-white odd:bg-gray-50 border-b">
-                        <th
-                          scope="row"
-                          class="px-6 py-2 text-black text-xs font-bold"
-                        >
-                          AAPL
-                        </th>
-                        <td class="px-6 py-2 text-black text-xs font-bold">
-                          795.648M
-                        </td>
-                        <td class="px-6 py-2 text-black text-xs">90.15B</td>
-                        <td class="px-6 py-2 text-black text-xs">4.4800</td>
-                        <td class="px-6 py-2 text-red-primary text-xs">
-                          -2.2300
-                        </td>
-                        <td class="px-6 py-2 text-green-primary text-xs">
-                          +4.88%
-                        </td>
-                        <td class="px-6 py-2 text-green-primary text-xs">
-                          66.705M
-                        </td>
-                      </tr>
-                      <tr class="even:bg-white odd:bg-gray-50 border-b">
-                        <th
-                          scope="row"
-                          class="px-6 py-2 text-black text-xs font-bold"
-                        >
-                          AAPL
-                        </th>
-                        <td class="px-6 py-2 text-black text-xs font-bold">
-                          795.648M
-                        </td>
-                        <td class="px-6 py-2 text-black text-xs">90.15B</td>
-                        <td class="px-6 py-2 text-black text-xs">4.4800</td>
-                        <td class="px-6 py-2 text-red-primary text-xs">
-                          -2.2300
-                        </td>
-                        <td class="px-6 py-2 text-green-primary text-xs">
-                          +4.88%
-                        </td>
-                        <td class="px-6 py-2 text-green-primary text-xs">
-                          66.705M
-                        </td>
-                      </tr>
-                      <tr class="even:bg-white odd:bg-gray-50 border-b">
-                        <th
-                          scope="row"
-                          class="px-6 py-2 text-black text-xs font-bold"
-                        >
-                          AAPL
-                        </th>
-                        <td class="px-6 py-2 text-black text-xs font-bold">
-                          795.648M
-                        </td>
-                        <td class="px-6 py-2 text-black text-xs">90.15B</td>
-                        <td class="px-6 py-2 text-black text-xs">4.4800</td>
-                        <td class="px-6 py-2 text-red-primary text-xs">
-                          -2.2300
-                        </td>
-                        <td class="px-6 py-2 text-green-primary text-xs">
-                          +4.88%
-                        </td>
-                        <td class="px-6 py-2 text-green-primary text-xs">
-                          66.705M
-                        </td>
-                      </tr>
+                    @foreach($BestPerformingStocksMarketData as $row)
+                        <tr class="even:bg-white odd:bg-gray-50 border-b">
+                            <th
+                                scope="row"
+                                class="px-6 py-2 text-black text-xs font-normal"
+                            >
+                                {{ $row['symbol'] }}
+                            </th>
+                            <td class="px-6 py-2 text-black text-xs">@php echo round($row['close'], 2) @endphp</td>
+                            <td class="px-6 py-2 @if($row['change_percent'] > 0) text-green-primary @elseif($row['change_percent'] < 0) text-red-primary @endif text-xs font-bold">
+                                @php echo round($row['change_percent'], 2) @endphp%
+                            </td>
+                            <td class="px-6 py-2 text-black text-xs">{{ HomeFunctions::change_price_format($row['volume']) }}</td>
+                            <td class="px-6 py-2 text-black text-xs">
+                                {{ $row['beta'] }}
+                            </td>
+                            <td class="px-6 py-2 text-black text-xs">
+                                {{ $row['market_cap'] }}
+                            </td>
+                        </tr>
+                    @endforeach
                     </tbody>
                   </table>
                 </div>
               </div>
             </div>
-            <a href="#more" class="view-more-link">View more</a>
+            <a href="{{ route('highest-iv-options') }}" class="view-more-link" target="_blank">View more</a>
           </div>
         </section>
         <section class="section py-[46px]">

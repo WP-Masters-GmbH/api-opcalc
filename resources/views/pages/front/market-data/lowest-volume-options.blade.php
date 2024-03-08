@@ -19,7 +19,7 @@
                             $index = 0;
                             foreach($table_data as $symbol => $symbol_data) :
                                 $market = $stocks_list[$symbol]['close'];
-                                $earnings = isset($earnings_estimates[$symbol]['est_earnings_date']) ? $earnings_estimates[$symbol]['est_earnings_date'] : 'None';
+                                $earnings = isset($earnings_estimates[$symbol]['est_earnings_date']) ? $earnings_estimates[$symbol]['est_earnings_date'] : 'n/a';
                                 $change_percent = isset($symbol_data['close']) && $symbol_data['close'] > 0 ? round($symbol_data['change_percent'] / $symbol_data['close'], 2) : $symbol_data['change_percent'];
                             ?>
                         {id:<?php echo $index; ?>, symbol:"<?php echo $symbol; ?>", market:"<?php echo $market; ?>", change:"<?php echo $symbol_data['change']; ?>", volume:"<?php echo $symbol_data['volume']; ?>", type:"<?php echo ucfirst($symbol_data['putCall']); ?>", strike:"<?php echo $symbol_data['strikePrice']; ?>", price:"<?php echo $symbol_data['price']; ?>", expiry:"<?php echo $symbol_data['expiration']; ?>", earnings:"<?php echo $earnings; ?>"},

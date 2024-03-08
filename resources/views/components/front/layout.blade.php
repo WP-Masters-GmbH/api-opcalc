@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link href="{{ url('/libs/year-picker/datepicker.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ url('/libs/font-awesome/all.min.css') }}">
-    <link rel="stylesheet" href="{{ url('/libs/tabulator/tabulator.min.css') }}">
+    <link rel="stylesheet" href="{{ url('/libs/tabulator/tabulator.min.css?' . time()) }}">
     <link rel="stylesheet" href="{{ url('/libs/select2/select2.min.css') }}">
     <link rel="stylesheet" href="{{ url('/libs/jquery-ui/jquery-ui.css') }}">
     <link rel="stylesheet" href="{{ url('/assets/style.css?' . time()) }}">

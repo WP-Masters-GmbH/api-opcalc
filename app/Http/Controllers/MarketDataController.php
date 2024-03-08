@@ -15,6 +15,7 @@ use App\Services\Controllers\OptionChainService;
 use App\Models\DividendStocks;
 use App\Models\Ratings;
 use App\Models\StockProfile;
+use App\Services\Commands\PagesFunctions\HomeFunctions;
 
 class MarketDataController extends Controller
 {
@@ -38,70 +39,9 @@ class MarketDataController extends Controller
         // Prepare Variables
         $month = date('F');
         $year = date('Y');
-        $table_data = [];
-
-        // Get Data
-        $options_list = EOD_OptionQuotes::select('eod_option_quotes.*')
-            ->joinSub(
-                EOD_OptionQuotes::select('symbol', DB::raw('MAX(date) as latest_date'))
-                    ->groupBy('symbol'),
-                'latest_dates',
-                function ($join) {
-                    $join->on('eod_option_quotes.symbol', '=', 'latest_dates.symbol')
-                        ->on('eod_option_quotes.date', '=', 'latest_dates.latest_date');
-                }
-            )
-            ->joinSub(
-                EOD_OptionQuotes::select('symbol', 'date', DB::raw('MAX(volatility) as max_volatility'))
-                    ->groupBy('symbol', 'date'),
-                'max_volatilities',
-                function ($join) {
-                    $join->on('eod_option_quotes.symbol', '=', 'max_volatilities.symbol')
-                        ->on('eod_option_quotes.date', '=', 'max_volatilities.date')
-                        ->on('eod_option_quotes.volatility', '=', 'max_volatilities.max_volatility');
-                }
-            )
-            ->orderBy('eod_option_quotes.symbol')
-            ->orderBy('eod_option_quotes.volatility', 'DESC')
-            ->distinct('eod_option_quotes.symbol')
-            ->take(500)
-            ->get()
-            ->toArray();
-
-        $symbols = EOD_OptionQuotes::getSymbolsFromRows($options_list);
-
-        // Get Data
-        $stocks_list = StockPrice::select('stock_quotes.*')
-            ->joinSub(
-                StockPrice::select('symbol', DB::raw('MAX(quotedate) as latest_date'))
-                    ->whereIn('symbol', $symbols) // Добавляем фильтрацию по символам
-                    ->groupBy('symbol'),
-                'latest_dates',
-                function ($join) {
-                    $join->on('stock_quotes.symbol', '=', 'latest_dates.symbol')
-                        ->on('stock_quotes.quotedate', '=', 'latest_dates.latest_date');
-                }
-            )
-            ->whereIn('stock_quotes.symbol', $symbols) // Дополнительная фильтрация после соединения
-            ->get()
-            ->toArray();
-
-        $latestIds = EarningsEstimate::selectRaw('MAX(id) as max_id')
-            ->whereIn('symbol', $symbols) // Добавляем фильтрацию по символам
-            ->groupBy('symbol');
-
-        $uniqueEarningsEstimates = EarningsEstimate::joinSub($latestIds, 'latest_ids', function ($join) {
-            $join->on('earnings_estimate.id', '=', 'latest_ids.max_id');
-        })
-            ->whereIn('earnings_estimate.symbol', $symbols) // Дополнительная фильтрация после соединения
-            ->orderBy('earnings_estimate.id', 'desc')
-            ->get()
-            ->toArray();
 
         // Prepare Table Data
-        $table_data = EOD_OptionQuotes::prepareHighestIVTable($options_list);
-        $stocks = StockPrice::prepareStocksSymbolsData($stocks_list);
-        $earnings_estimates = EarningsEstimate::prepareMarketData($uniqueEarningsEstimates);
+        [$table_data, $stocks, $earnings_estimates] = HomeFunctions::getHighestIVRows(500);
 
         return view('pages.front.market-data.highest-iv-options', [
             'title' => "Highest IV Option contracts for {$month} {$year}",
@@ -208,28 +148,29 @@ class MarketDataController extends Controller
         // Get Data
         $options_list = EOD_OptionQuotes::select('eod_option_quotes.*')
             ->joinSub(
-                EOD_OptionQuotes::select('symbol', DB::raw('MAX(date) as latest_date'))
-                    ->groupBy('symbol'),
-                'latest_dates',
+                EOD_OptionQuotes::select('symbol', 'date', DB::raw('MAX(id) as max_id'))
+                    ->groupBy('symbol', 'date'),
+                'latest_ids',
                 function ($join) {
-                    $join->on('eod_option_quotes.symbol', '=', 'latest_dates.symbol')
-                        ->on('eod_option_quotes.date', '=', 'latest_dates.latest_date');
+                    $join->on('eod_option_quotes.symbol', '=', 'latest_ids.symbol')
+                        ->on('eod_option_quotes.date', '=', 'latest_ids.date')
+                        ->on('eod_option_quotes.id', '=', 'latest_ids.max_id');
                 }
             )
             ->joinSub(
-                EOD_OptionQuotes::select('symbol', 'date', DB::raw('MIN(volatility) as min_volatility'))
-                    ->where('volatility', '>', 0)
-                    ->groupBy('symbol', 'date'),
+                EOD_OptionQuotes::select('symbol', 'date', 'id', DB::raw('MIN(volatility) as min_volatility'))
+                    ->groupBy('symbol', 'date', 'id'),
                 'min_volatilities',
                 function ($join) {
                     $join->on('eod_option_quotes.symbol', '=', 'min_volatilities.symbol')
                         ->on('eod_option_quotes.date', '=', 'min_volatilities.date')
-                        ->whereRaw('eod_option_quotes.volatility = min_volatilities.min_volatility');
+                        ->on('eod_option_quotes.id', '=', 'min_volatilities.id')
+                        ->on('eod_option_quotes.volatility', '=', 'min_volatilities.min_volatility');
                 }
             )
-            ->orderBy('eod_option_quotes.symbol')
             ->orderBy('eod_option_quotes.volatility', 'ASC')
-            ->distinct('eod_option_quotes.symbol')
+            ->orderBy('eod_option_quotes.symbol')
+            ->distinct()
             ->take(500)
             ->get()
             ->toArray();
@@ -391,9 +332,7 @@ class MarketDataController extends Controller
      */
     public function stockByMarketCap()
     {
-        $symbols = ActualSymbols::pluck('symbol')->toArray();
-        $eod_stocks = EOD_StockQuotes::whereIn('symbol', $symbols)->get()->toArray();
-        $table_data = EOD_StockQuotes::prepareMarketData($eod_stocks);
+        $table_data = HomeFunctions::getHighestMarketCapRows(10000);
 
         return view('pages.front.market-data.stocks-by-market-cap', [
             'title' => 'Stocks listed by MarketCap',
@@ -446,22 +385,7 @@ class MarketDataController extends Controller
      */
     public function bestPerformingStocksYesterday()
     {
-        // Prepare Variables
-        $symbols = ActualSymbols::pluck('symbol')->toArray();
-        $yesterday = date('Y-m-d', strtotime('-1 day'));
-
-        // Get number day of the week
-        $dayOfWeek = date('N', strtotime($yesterday));
-
-        // If weekends - get last Friday
-        if ($dayOfWeek == 6 || $dayOfWeek == 7) {
-            $yesterday = date('Y-m-d', strtotime('last Friday'));
-        }
-
-        $eod_stocks = EOD_StockQuotes::whereIn('symbol', $symbols)->where('date', $yesterday)->get()->toArray();
-
-        // Prepare Table Data
-        $market_data = EOD_StockQuotes::prepareMarketData($eod_stocks);
+        [$yesterday, $market_data] = HomeFunctions::getBestPerformingStocksYesterday(10000);
 
         return view('pages.front.market-data.best-performing-stocks-yesterday', [
             'title' => "Yesterday Best performing stocks",
@@ -574,12 +498,7 @@ class MarketDataController extends Controller
      */
     public function highestDividendYieldStocks()
     {
-        $symbols = ActualSymbols::pluck('symbol')->toArray();
-        $eod_stocks = EOD_StockQuotes::whereIn('symbol', $symbols)->get()->toArray();
-        $table_data = EOD_StockQuotes::prepareMarketData($eod_stocks);
-
-        $dividends = DividendStocks::whereIn('symbol', $symbols)->get()->toArray();
-        $dividendsData = DividendStocks::prepareDevidents($dividends);
+        [$table_data, $dividendsData] = HomeFunctions::getHighestDividendStocks(10000);
 
         return view('pages.front.market-data.highest-dividend-yield-stocks', [
             'title' => 'Stocks with highest dividend yield',
@@ -660,21 +579,7 @@ class MarketDataController extends Controller
      */
     public function upcomingEarnings()
     {
-        $symbols = ActualSymbols::pluck('symbol')->toArray();
-        $earnings = EarningsEstimate::select('earnings_estimate.*')
-            ->fromSub(function ($query) use ($symbols) {
-                $query->from('earnings_estimate')
-                    ->whereIn('symbol', $symbols)
-                    ->selectRaw('id, symbol, est_earnings_date, e_eps, e_rev, ROW_NUMBER() OVER (PARTITION BY symbol ORDER BY est_earnings_date ASC) as rn')
-                    ->where('est_earnings_date', '>=', date('Y-m-d'))
-                    ->where('est_earnings_date', '<=', date('Y-m-d', strtotime('+30 days')));
-            }, 'earnings_estimate')
-            ->where('rn', 1)
-            ->get()
-            ->toArray();
-
-        $eod_stocks = EOD_StockQuotes::whereIn('symbol', $symbols)->get()->toArray();
-        $eod_stocks = EOD_StockQuotes::prepareMarketData($eod_stocks);
+        [$eod_stocks, $earnings] = HomeFunctions::getUpcomingEarnings(10000);
 
         return view('pages.front.market-data.upcoming-earnings', [
             'title' => 'Upcoming earning dates & estimates',

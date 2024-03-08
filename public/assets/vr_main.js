@@ -97,6 +97,11 @@ $(document).ready(function() {
         },
     });
 
+    $('body').on('click', ".rates-tab", function () {
+        var button_url = $(this).data('button-link');
+        $('.view-more-link').attr('href', button_url);
+    });
+
     $('body').on('click', "#download-table-xlsx", function () {
         dca_table.download("csv", "backtester.csv");
     });
