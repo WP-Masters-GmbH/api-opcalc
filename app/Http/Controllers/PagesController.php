@@ -13,14 +13,4 @@ class PagesController extends Controller
     {
         return view('welcome');
     }
-
-    /**
-     * Option Pin Theory Page
-     */
-    public function optionPinningStrategy()
-    {
-        return view('pages.front.option-pinning-strategy', [
-            'title' => 'Option Pin Theory'
-        ]);
-    }
 }

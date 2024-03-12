@@ -26,12 +26,14 @@ use App\Http\Controllers\formController;
 Route::get('/', HomeController::class);
 Route::get('/blog', [BlogController::class, 'index'])->name('blog');
 Route::get('/market-data', [MarketDataController::class, 'index'])->name('market-data');
-Route::get('/option-pinning-strategy', [PagesController::class, 'optionPinningStrategy'])->name('option-pinning-strategy');
+Route::get('/market-data/pin-theory', [MarketDataController::class, 'pinTheory'])->name('pin-theory');
 
 // Free financial tools
 Route::get('/financial-tools/dollar-cost-averaging-calculator', [FinancialToolsController::class, 'dollarCostAveragingCalculator'])->name('dollar-cost-averaging-calculator');
 Route::get('/financial-tools/earnings-simulator', [FinancialToolsController::class, 'earningsSimulator'])->name('earnings-simulator');
 
+
+Route::get('/market-data/all-nyse-stocks', [MarketDataController::class, 'allNyseStocks'])->name('all-nyse-stocks');
 
 // Options Data
 Route::get('/market-data/highest-iv-options', [MarketDataController::class, 'highestIVOptions'])->name('highest-iv-options');
