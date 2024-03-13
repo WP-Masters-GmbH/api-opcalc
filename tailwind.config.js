@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     content: [
-        "./resources/**/*.blade.php",
+        "./resources/views/**/*.blade.php",
         "./resources/**/*.js",
         "./resources/**/*.vue",
     ],
@@ -35,10 +35,10 @@ module.exports = {
             padding: {
                 "22px": "22px",
             },
+            transformOrigin: {
+                "center-left": "50% 75%",
+            },
         },
     },
-    plugins: {
-        tailwindcss: {},
-        autoprefixer: {},
-    },
+    plugins: [],
 };

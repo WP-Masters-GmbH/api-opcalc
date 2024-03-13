@@ -2,12 +2,12 @@
 
 use App\Http\Controllers\Front\HomeController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PagesController;
 use App\Http\Controllers\MarketDataController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\FinancialToolsController;
 use App\Http\Controllers\ajaxController;
 use App\Http\Controllers\formController;
+use App\Http\Controllers\RatingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,12 +26,14 @@ use App\Http\Controllers\formController;
 Route::get('/', HomeController::class);
 Route::get('/blog', [BlogController::class, 'index'])->name('blog');
 Route::get('/market-data', [MarketDataController::class, 'index'])->name('market-data');
-Route::get('/option-pinning-strategy', [PagesController::class, 'optionPinningStrategy'])->name('option-pinning-strategy');
+Route::get('/market-data/pin-theory', [MarketDataController::class, 'pinTheory'])->name('pin-theory');
 
 // Free financial tools
 Route::get('/financial-tools/dollar-cost-averaging-calculator', [FinancialToolsController::class, 'dollarCostAveragingCalculator'])->name('dollar-cost-averaging-calculator');
 Route::get('/financial-tools/earnings-simulator', [FinancialToolsController::class, 'earningsSimulator'])->name('earnings-simulator');
 
+
+Route::get('/market-data/all-nyse-stocks', [MarketDataController::class, 'allNyseStocks'])->name('all-nyse-stocks');
 
 // Options Data
 Route::get('/market-data/highest-iv-options', [MarketDataController::class, 'highestIVOptions'])->name('highest-iv-options');
@@ -74,3 +76,5 @@ Route::post('/ajax/dca_calculation', [ajaxController::class, 'dcaCalculation']);
 // Form Routes
 Route::post('/form/search_chain_symbol', [formController::class, 'searchChainSymbol'])->name('search-chain-symbol');
 ;
+
+Route::get('/ratings/{symbol}', [RatingsController::class, 'getRating'])->name('ratings');

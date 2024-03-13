@@ -94,3 +94,17 @@
 .options-chain-filters .select2 .select2-selection__rendered {
     @apply px-2 text-black;
 }
+
+.triangle-up {
+    @apply w-0 h-0
+    border-l-[6px] border-l-transparent
+    border-b-[12px] border-b-green-500
+    border-r-[6px] border-r-transparent;
+}
+
+.triangle-down {
+    @apply w-0 h-0
+    border-l-[6px] border-l-transparent
+    border-t-[12px] border-t-red-500
+    border-r-[6px] border-r-transparent;
+}

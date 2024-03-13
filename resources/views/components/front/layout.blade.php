@@ -36,6 +36,6 @@
 
     @if(!empty($script))
         <script src="{{ url("/assets/pages/$script.js?" . time()) }}"></script>
-    @endif;
+    @endif
 </body>
 </html>
