@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (analysts) {
         const data = {
+            labels: ["Sell", "Moderate Sell", "Hold", "Moderate Buy", "Buy"],
             datasets: [
                 {
                     data: [10, 10, 10, 10, 10],
@@ -30,9 +31,20 @@ document.addEventListener("DOMContentLoaded", function () {
             circumference: 180,
             rotation: -90,
             spacing: 20,
+            animation: {
+                duration: false,
+            },
             plugins: {
                 tooltip: {
-                    enabled: false,
+                    displayColors: false,
+                    callbacks: {
+                        label: function (ctx) {
+                            return ctx.label;
+                        },
+                    },
+                },
+                legend: {
+                    display: false,
                 },
             },
         };

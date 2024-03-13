@@ -37,6 +37,7 @@ module.exports = {
             },
             transformOrigin: {
                 "center-left": "50% 75%",
+                "center-left-mob": "130% 75%",
             },
         },
     },
