@@ -19,7 +19,7 @@
                     <li><a href="{{ route('highest-volume-options') }}">Highest Volume Option contracts</a></li>
                     <li><a href="{{ route('lowest-iv-options') }}">Lowest IV Option contracts</a></li>
                     <li><a href="{{ route('lowest-volume-options') }}">Lowest Volume Option contracts</a></li>
-                    <li><a href="{{ route('option-pinning-strategy') }}">Option Pin Theory</a> - Revealing Strategic Strike Prices for Traders</li>
+                    <li><a href="{{ route('pin-theory') }}">Option Pin Theory</a> - Revealing Strategic Strike Prices for Traders</li>
                     <li><a href="{{ route('eod-option-chains', ['TSLA', date('Y-m-d')]) }}">EOD option prices</a> - View all open, high, low, and closing prices for all option contracts</li>
                     <li><a href="{{ route('all-usa-stocks') }}">List of all stocks with tradable options</a></li>
                     <li><a href="{{ route('option-chain-search') }}">Option Chains</a></li>
@@ -54,6 +54,7 @@
                 <ul>
                     <li><a href="{{ route('rating-analysts-prediction', ['TSLA']) }}">Stock Analysts Estimates, Ratings and Price Targets</a></li>
                     <li><a href="{{ route('upcoming-earnings') }}">Upcoming Earning Dates & Estimates</a></li>
+                    <li><a href="{{ route('all-nyse-stocks') }}">All NYSE Stocks</a></li>
                 </ul>
             </div>
         </section>

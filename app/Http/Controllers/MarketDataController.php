@@ -16,6 +16,7 @@ use App\Models\DividendStocks;
 use App\Models\Ratings;
 use App\Models\StockProfile;
 use App\Services\Commands\PagesFunctions\HomeFunctions;
+use App\Models\SymbolsNumExpirations;
 
 class MarketDataController extends Controller
 {
@@ -585,6 +586,51 @@ class MarketDataController extends Controller
             'title' => 'Upcoming earning dates & estimates',
             'eod_stocks' => $eod_stocks,
             'earnings' => $earnings
+        ]);
+    }
+
+    /**
+     * Pin Theory Page
+     */
+    public function pinTheory(OptionChainService $service)
+    {
+        $symbols = ActualSymbols::pluck('symbol')->toArray();
+        $lastRecords = EOD_StockQuotes::select('symbol', DB::raw('MAX(id) as last_id'))
+            ->whereIn('symbol', $symbols)
+            ->groupBy('symbol');
+
+        $eod_stocks = EOD_StockQuotes::whereIn('id', function ($query) use ($lastRecords) {
+            $query->select('last_id')->fromSub($lastRecords, 'sub');
+        })->get()->toArray();
+        $tableData = EOD_StockQuotes::prepareMarketData($eod_stocks);
+
+        // Prepare OI Data
+        $stocksOI = [];
+        foreach($symbols as $symbol) {
+            [$dates, $calls, $puts, $strikes, $startDate, $currentStockInfo] = $service->getData($symbol, Null);
+
+            if(!empty($calls) && !empty($puts)) {
+                $stocksOI[$symbol] = EOD_StockQuotes::getTopStrikeByOI($calls, $puts);
+            }
+        }
+
+        return view('pages.front.market-data.pin-theory', [
+            'title' => 'Pin Theory',
+            'tableData' => $tableData,
+            'stocksOI' => $stocksOI
+        ]);
+    }
+
+    /**
+     * All NYSE Stocks Page
+     */
+    public function allNyseStocks()
+    {
+        $tableData = SymbolsNumExpirations::get()->toArray();
+
+        return view('pages.front.market-data.all-nyse-stocks', [
+            'title' => 'All NYSE Stocks',
+            'tableData' => $tableData
         ]);
     }
 
